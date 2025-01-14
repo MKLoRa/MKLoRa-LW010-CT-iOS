@@ -47,6 +47,16 @@ NS_ASSUME_NONNULL_BEGIN
                             failedBlock:(void (^)(NSError *error))failedBlock;
 
 #pragma mark ****************************************System************************************************
+/// Read the mac address of the device.
+/*
+ @{
+    @"macAddress":@"AA:BB:CC:DD:EE:FF"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMacAddressWithSucBlock:(void (^)(id returnData))sucBlock
+                          failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read the time zone of the device.
 /*
@@ -60,21 +70,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readTimeZoneWithSucBlock:(void (^)(id returnData))sucBlock
                         failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read the working mode of the device.
+/// Heartbeat Interval.
 /*
  @{
- @"mode":@"2"
+ @"interval":@"720"     //Unit:Min.
  }
- 
- 0：Standby mode
- 1：Timing mode
- 2：Periodic mode
- 3：Motion Mode
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readWorkModeWithSucBlock:(void (^)(id returnData))sucBlock
-                        failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readHeartbeatIntervalWithSucBlock:(void (^)(id returnData))sucBlock
+                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read Indicator Settings.
 /*
@@ -95,16 +100,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readIndicatorSettingsWithSucBlock:(void (^)(id returnData))sucBlock
                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Heartbeat Interval.
+/// Hall Power Off Status.
 /*
- @{
- @"interval":@"720"     //Unit:Min.
+    @{
+    @"isOn":@(YES)
  }
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readHeartbeatIntervalWithSucBlock:(void (^)(id returnData))sucBlock
-                                 failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readHallPowerOffStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read Shutdown Payload Status.
 /*
@@ -117,38 +122,40 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readShutdownPayloadStatusWithSucBlock:(void (^)(id returnData))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Whether to trigger a heartbeat when the device is low on battery.
+/// Buzzer sound selection.
 /*
     @{
-    @"isOn":@(YES),
+    @"buzzer":@"0",     //"0":No  "1":Alarm  "2":Normal
  }
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readLowPowerPayloadStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                     failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readBuzzerSoundTypeWithSucBlock:(void (^)(id returnData))sucBlock
+                               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// When the power of the device is lower than how much, it is judged as a low power state.
+/// Read three-axis sensor wake-up conditions.
 /*
-    @{
-    @"prompt":@"0",         //@"0":10%   @"1":20%   @"2":30%    @"3":40%    @"4":50%    @"5":60%
- }
+ @{
+     @"threshold":threshold,        //x 16mg
+     @"duration":duration,          //x 10ms
+ };
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readLowPowerPromptWithSucBlock:(void (^)(id returnData))sucBlock
-                              failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readThreeAxisWakeupConditionsWithSucBlock:(void (^)(id returnData))sucBlock
+                                         failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Hall Power Off Status.
+/// Read three-axis data motion detection judgment parameters.
 /*
-    @{
-    @"isOn":@(YES)
- }
+ @{
+     @"threshold":threshold,        //x 2mg
+     @"duration":duration,          //x 5ms
+ };
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readHallPowerOffStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                  failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readThreeAxisMotionParametersWithSucBlock:(void (^)(id returnData))sucBlock
+                                         failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read battery voltage.
 /*
@@ -160,17 +167,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readBatteryVoltageWithSucBlock:(void (^)(id returnData))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Read the mac address of the device.
-/*
- @{
-    @"macAddress":@"AA:BB:CC:DD:EE:FF"
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readMacAddressWithSucBlock:(void (^)(id returnData))sucBlock
-                          failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read the PCBA Status of the device.
 /// @param sucBlock Success callback
@@ -184,22 +180,68 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readSelftestStatusWithSucBlock:(void (^)(id returnData))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read the Selftest Status of the device.
+/// Temperature.If the temperature monitoring function is turned off, the value is 0x80.
+/*
+    @{
+    @"temperature":@"10", //Unit: ℃
+ }
+*/
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readSelftestStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                              failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readTemperatureWithSucBlock:(void (^)(id returnData))sucBlock
+                           failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Automatically power on after charging.
+/// illumination intensity.If the light monitoring function is turned off, the value is 0xFFFF.
+/*
+    @{
+    @"intensity":@"10", //Unit: Lux
+ }
+*/
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readLightIlluminationIntensityWithSucBlock:(void (^)(id returnData))sucBlock
+                                          failedBlock:(void (^)(NSError * error))failedBlock;
+
+#pragma mark ***************************************电池相关参数************************************************
+/// All Cycles Battery Information.
 /*
  @{
- @"isOn":@(YES)
+     @"workTimes":@"65535",         //Device working times.(Unit:s)
+     @"advCount":@"65535",          //The number of Bluetooth broadcasts by the device.
+     @"axisWakeupTimes":@"11111",       //Three-axis sensor wake-up times.(Unit:s)
+     @"blePostionTimes":@"11111",       //Bluetooth positioning times.(Unit:s)
+     @"gpsPostionTimes":@"11111",       //GPS positioning times.(Unit:s)
+     @"loraPowerConsumption":@"50000",      //Power consumption of LoRaWAN sending and receiving data.(Unit:mAS)
+     @"loraSendCount":@"10000",     //Number of LoRaWAN transmissions.
+     @"batteryPower":@"33500"       //Total battery power consumption.(Unit:0.001mAH)
+ };
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readAllCycleBatteryInformationWithSucBlock:(void (^)(id returnData))sucBlock
+                                          failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// When the power of the device is lower than how much, it is judged as a low power state.
+/*
+    @{
+    @"prompt":@"0",         //@"0":10%   @"1":20%   @"2":30%    @"3":40%    @"4":50%    @"5":60%
  }
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readAutoPowerOnAfterChargingWithSucBlock:(void (^)(id returnData))sucBlock
-                                        failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readLowPowerPromptWithSucBlock:(void (^)(id returnData))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Whether to trigger a heartbeat when the device is low on battery.
+/*
+    @{
+    @"isOn":@(YES),
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readLowPowerPayloadStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Low power information packet reporting interval in low power state.
 /*
@@ -212,28 +254,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readLowPowerPayloadIntervalWithSucBlock:(void (^)(id returnData))sucBlock
                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// GPS limit upload switch.
+/// Automatically power on after charging.
 /*
  @{
-    @"isOn":@(YES)
+ @"isOn":@(YES)
  }
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readGpsLimitUploadStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                    failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Buzzer sound selection.
-/*
-    @{
-    @"buzzer":@"0",     //"0":No  "1":Alarm  "2":Normal
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readBuzzerSoundTypeWithSucBlock:(void (^)(id returnData))sucBlock
-                               failedBlock:(void (^)(NSError *error))failedBlock;
-
++ (void)ct_readAutoPowerOnAfterChargingWithSucBlock:(void (^)(id returnData))sucBlock
+                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
 #pragma mark ****************************************蓝牙相关参数************************************************
 
@@ -270,6 +300,28 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readBroadcastTimeoutWithSucBlock:(void (^)(id returnData))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Beacon status.
+/*
+ @{
+    @"isOn":@(YES)
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readBeaconStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                            failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read the adv interval of the device.
+/*
+ @{
+    @"interval":@"10", //Unit:100ms
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readAdvIntervalWithSucBlock:(void (^)(id returnData))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Read the txPower of device.
 /*
  @{
@@ -293,29 +345,24 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readDeviceNameWithSucBlock:(void (^)(id returnData))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read the adv interval of the device.
-/*
- @{
-    @"interval":@"10", //Unit:100ms
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readAdvIntervalWithSucBlock:(void (^)(id returnData))sucBlock
-                           failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Beacon status.
-/*
- @{
-    @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readBeaconStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                            failedBlock:(void (^)(NSError *error))failedBlock;
-
 #pragma mark ****************************************模式相关参数************************************************
+/// Read the working mode of the device.
+/*
+ @{
+ @"mode":@"2"
+ }
+ 
+ 0：Standby mode
+ 1：Timing mode
+ 2：Periodic mode
+ 3：Motion Mode
+ 4:Time-Segmented Mode
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readWorkModeWithSucBlock:(void (^)(id returnData))sucBlock
+                        failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Read Standby Mode positioning strategy.
 /*
  @{
@@ -386,40 +433,34 @@ NS_ASSUME_NONNULL_BEGIN
  }]
  
  hour:0~23,
- minuteGear:  0:00, 1:15, 2:30, 3:45
+ minuteGear: 0-59
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)ct_readTimingModeReportingTimePointWithSucBlock:(void (^)(id returnData))sucBlock
                                             failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Read Motion Mode Events.
+/// Notify Event On Start.
 /*
  @{
-     @"fixOnStart":@(YES),
-     @"fixInTrip":@(NO),
-     @"fixOnEnd":@(YES),
-     @"notifyEventOnStart":@(NO),
-     @"notifyEventInTrip":@(NO),
-     @"notifyEventOnEnd":@(YES),
-     @"fixOnStationaryState":@(YES)
+     @"isOn":@(YES),
  };
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readMotionModeEventsWithSucBlock:(void (^)(id returnData))sucBlock
-                                failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readMotionModeEventsNotifyEventOnStartWithSucBlock:(void (^)(id returnData))sucBlock
+                                                  failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Read Motion Mode Number Of Fix On Start.
+/// Fix On Start.
 /*
  @{
-    @"number":@"1"
- }
+     @"isOn":@(YES),
+ };
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readMotionModeNumberOfFixOnStartWithSucBlock:(void (^)(id returnData))sucBlock
-                                            failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readMotionModeEventsFixOnStartWithSucBlock:(void (^)(id returnData))sucBlock
+                                          failedBlock:(void (^)(NSError * error))failedBlock;
 
 /// Read Motion Mode Pos-Strategy On Start.
 /*
@@ -438,16 +479,38 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readMotionModePosStrategyOnStartWithSucBlock:(void (^)(id returnData))sucBlock
                                             failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Read Motion Mode Report Interval In Trip.
+/// Read Motion Mode Number Of Fix On Start.
 /*
  @{
-    @"interval":@"5"
+    @"number":@"1"
  }
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readMotionModeReportIntervalInTripWithSucBlock:(void (^)(id returnData))sucBlock
-                                              failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readMotionModeNumberOfFixOnStartWithSucBlock:(void (^)(id returnData))sucBlock
+                                            failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Notify Event In Trip.
+/*
+ @{
+     @"isOn":@(YES),
+ };
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeEventsNotifyEventInTripWithSucBlock:(void (^)(id returnData))sucBlock
+                                                 failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Fix In Trip.
+/*
+ @{
+     @"isOn":@(YES),
+ };
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeEventsFixInTripWithSucBlock:(void (^)(id returnData))sucBlock
+                                         failedBlock:(void (^)(NSError * error))failedBlock;
 
 /// Read Motion Mode Pos-Strategy In Trip.
 /*
@@ -467,38 +530,38 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readMotionModePosStrategyInTripWithSucBlock:(void (^)(id returnData))sucBlock
                                            failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Read Motion Mode Trip End Timeout.(Unit:10s)
+/// Read Motion Mode Report Interval In Trip.
 /*
  @{
-    @"time":@"5"
+    @"interval":@"5"
  }
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readMotionModeTripEndTimeoutWithSucBlock:(void (^)(id returnData))sucBlock
++ (void)ct_readMotionModeReportIntervalInTripWithSucBlock:(void (^)(id returnData))sucBlock
+                                              failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Notify Event On End.
+/*
+ @{
+     @"isOn":@(YES),
+ };
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeEventsNotifyEventOnEndWithSucBlock:(void (^)(id returnData))sucBlock
+                                                failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Fix On End.
+/*
+ @{
+     @"isOn":@(YES),
+ };
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeEventsFixOnEndWithSucBlock:(void (^)(id returnData))sucBlock
                                         failedBlock:(void (^)(NSError * error))failedBlock;
-
-/// Read Motion Mode Number Of Fix On End.
-/*
- @{
- @"number":@"1"
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readMotionModeNumberOfFixOnEndWithSucBlock:(void (^)(id returnData))sucBlock
-                                          failedBlock:(void (^)(NSError * error))failedBlock;
-
-/// Read Motion Mode Report Interval On End.
-/*
- @{
- @"interval":@"120"
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readMotionModeReportIntervalOnEndWithSucBlock:(void (^)(id returnData))sucBlock
-                                             failedBlock:(void (^)(NSError * error))failedBlock;
 
 /// Read Motion Mode Pos-Strategy On End.
 /*
@@ -516,6 +579,50 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readMotionModePosStrategyOnEndWithSucBlock:(void (^)(id returnData))sucBlock
                                           failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Read Motion Mode Report Interval On End.
+/*
+ @{
+ @"interval":@"120"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeReportIntervalOnEndWithSucBlock:(void (^)(id returnData))sucBlock
+                                             failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Read Motion Mode Number Of Fix On End.
+/*
+ @{
+ @"number":@"1"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeNumberOfFixOnEndWithSucBlock:(void (^)(id returnData))sucBlock
+                                          failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Read Motion Mode Trip End Timeout.(Unit:10s)
+/*
+ @{
+    @"time":@"5"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeTripEndTimeoutWithSucBlock:(void (^)(id returnData))sucBlock
+                                        failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Fix On Stationary State.
+/*
+ @{
+     @"isOn":@(YES),
+ };
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readMotionModeEventsFixOnStationaryStateWithSucBlock:(void (^)(id returnData))sucBlock
+                                                    failedBlock:(void (^)(NSError * error))failedBlock;
 
 /// Read Pos-Strategy On Stationary.
 /*
@@ -545,7 +652,47 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readReportIntervalOnStationaryWithSucBlock:(void (^)(id returnData))sucBlock
                                           failedBlock:(void (^)(NSError * error))failedBlock;
 
+/// Read Time-Segmented Mode Positioning Strategy.
+/*
+ @{
+ @"strategy":@(1)
+ }
+ 
+ 0:BLE
+ 1:GPS
+ 2:BLE+GPS
+ 3:BLE*GPS
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readTimeSegmentedModeStrategyWithSucBlock:(void (^)(id returnData))sucBlock
+                                         failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Read Time-Segmented Mode Time Period Setting.
+/*
+ 
+ @{
+     @"startHour":@(0),
+     @"startMinuteGear":@(0),
+     @"endHour":@(1),
+     @"endMinuteGear":@(1),
+     @"reportInterval":@"50",   //Report Interval. Unit:s
+ }
+ 
+ startHour:0~23,
+ startMinuteGear:0-59,
+ endHour:0~23,
+ endMinuteGear:0-59,
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readTimeSegmentedModeTimePeriodSettingWithSucBlock:(void (^)(id returnData))sucBlock
+                                                  failedBlock:(void (^)(NSError * error))failedBlock;
+
+
+
 #pragma mark ****************************************蓝牙扫描过滤参数************************************************
+
 
 /// The device will uplink valid ADV data with RSSI no less than xx dBm.
 /*
@@ -575,6 +722,29 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readFilterRelationshipWithSucBlock:(void (^)(id returnData))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read switch status of filtered device types.
+/*
+ @{
+    @"other":@(YES),
+    @"iBeacon":@(YES),
+    @"uid":@(YES),
+    @"url":@(YES),
+    @"tlm":@(YES),
+    @"bxp_acc":@(YES),
+    @"bxp_th":@(YES),
+    @"bxp_ts":@(YES),
+    @"bxp_deviceInfo":@(YES),
+    @"bxp_button":@(YES),
+    @"bxp_pir":@(YES),
+    @"bxp_tof":@(YES),
+    @"bxp_beacon":@(YES),
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readFilterTypeStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// A switch to accurately filter Mac addresses.
 /*
@@ -650,29 +820,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readFilterAdvNameListWithSucBlock:(void (^)(id returnData))sucBlock
                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read switch status of filtered device types.
-/*
- @{
-     @"iBeacon":@(YES),
-     @"uid":@(YES),
-     @"url":@(YES),
-     @"tlm":@(YES),
-     @"bxp_beacon":@(YES),
-     @"bxp_deviceInfo":@(YES),
-     @"bxp_acc":@(YES),
-     @"bxp_th":@(YES),
-     @"bxp_button":@(YES),
-     @"bxp_tag":@(YES),
-     @"bxp_pir":@(YES),
-     @"bxp_tof":@(YES),
-     @"bxp_sensorInfo":@(YES),
-     @"other":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readFilterTypeStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                failedBlock:(void (^)(NSError *error))failedBlock;
+
 
 /// Switch status of filter by iBeacon.
 /*
@@ -847,17 +995,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readFilterByBXPBeaconUUIDWithSucBlock:(void (^)(id returnData))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read the filter status of the BXP Device Info.
-/*
- @{
- @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readFilterByBXPDeviceInfoStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                           failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Read the filter status of the BeaconX Pro-ACC device.
 /*
  @{
@@ -879,6 +1016,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readBXPTHFilterStatusWithSucBlock:(void (^)(id returnData))sucBlock
                                  failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read the filter status of the BXP Device Info.
+/*
+ @{
+ @"isOn":@(YES)
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readFilterByBXPDeviceInfoStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                           failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read the filter status of the BXP Button Info.
 /*
@@ -905,7 +1053,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readBXPButtonAlarmFilterStatusWithSucBlock:(void (^)(id returnData))sucBlock
                                           failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Switch status of filter by BXP-TagID.
+/// Switch status of filter by BXP-T&S.
 /*
  @{
  @"isOn":@(YES)
@@ -938,7 +1086,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readReverseFilterTagIDStatusWithSucBlock:(void (^)(id returnData))sucBlock
                                         failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Filtered list of BXP-TagID addresses.
+/// Filtered list of BXP-T&S TagID addresses.
 /*
  @{
  @"tagIDList":@[
@@ -952,6 +1100,28 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readFilterBXPTagIDListWithSucBlock:(void (^)(id returnData))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// BXP-TOF equipment filter switch.
+/*
+    @{
+    @"isOn":@(YES)
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readFilterBXPTofStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                  failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// BXP-TOF equipment filter MFG code.
+/*
+    @{
+    @"codeList":@[@"AABB",@"CCDD"]
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readFilterBXPTofMfgCodeListWithSucBlock:(void (^)(id returnData))sucBlock
+                                       failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Switch status of filter by MK-PIR.
 /*
@@ -1032,76 +1202,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readFilterByPirMinorRangeWithSucBlock:(void (^)(id returnData))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// BXP-TOF equipment filter switch.
-/*
-    @{
-    @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readFilterBXPTofStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                  failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-TOF equipment filter MFG code.
-/*
-    @{
-    @"codeList":@[@"AABB",@"CCDD"]
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readFilterBXPTofMfgCodeListWithSucBlock:(void (^)(id returnData))sucBlock
-                                       failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type precise filtering Tag-ID switch
-/*
- @{
- @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readBXPSensorInfoFilterByTagIDStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                                failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type precise filtering Tag-ID switch.
-/*
- @{
- @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readBXPSensorInfoPreciseMatchTagIDStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                                    failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type reverse filtering Tag-ID switch.
-/*
- @{
- @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readBXPSensorInfoReverseFilterTagIDStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                                     failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type device Tag-ID filtering rules.
-/*
- @{
- @"tagIDList":@[
-    @"aabb",
- @"aabbccdd",
- @"ddeeff"
- ],
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readBXPSensorInfoFilterBXPTagIDListWithSucBlock:(void (^)(id returnData))sucBlock
-                                               failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Switch status of filter by Other.
 /*
  @{
@@ -1170,6 +1270,9 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  0:AS923 
  1:AU915
+ 2:CN470
+ 3:CN779
+ 4:EU433
  5:EU868
  6:KR920
  7:IN865
@@ -1231,7 +1334,19 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readLorawanNWKSKEYWithSucBlock:(void (^)(id returnData))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read lorawan CH.It is only used for US915,AU915.
+/// Read The ADR ACK LIMIT Of Lorawan.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readLorawanADRACKLimitWithSucBlock:(void (^)(id returnData))sucBlock
+                                  failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read The ADR ACK DELAY Of Lorawan.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readLorawanADRACKDelayWithSucBlock:(void (^)(id returnData))sucBlock
+                                  failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read lorawan CH.It is only used for US915,AU915,CN470.
 /*
  @{
  @"CHL":0
@@ -1243,7 +1358,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readLorawanCHWithSucBlock:(void (^)(id returnData))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read lorawan DR.It is only used for EU868,KR920, IN865, RU864.
+/// Read lorawan DR.It is only used for CN470, CN779, EU433, EU868,KR920, IN865, RU864.
 /*
  @{
  @"DR":1
@@ -1268,7 +1383,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readLorawanUplinkStrategyWithSucBlock:(void (^)(id returnData))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read lorawan duty cycle status.It is only used for EU868 and RU864.
+/// Read lorawan duty cycle status.It is only used for EU868,CN779, EU433 and RU864.
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)ct_readLorawanDutyCycleStatusWithSucBlock:(void (^)(id returnData))sucBlock
@@ -1286,17 +1401,17 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readLorawanNetworkCheckIntervalWithSucBlock:(void (^)(id returnData))sucBlock
                                            failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read The ADR ACK LIMIT Of Lorawan.
+/// Device Information Payload Type.
+/*
+    @{
+    @"type":@"0",                   //@"0":Unconfirmed @"1":Confirmed
+    @"retransmissionTimes":@"1",
+ }
+ */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readLorawanADRACKLimitWithSucBlock:(void (^)(id returnData))sucBlock
-                                  failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Read The ADR ACK DELAY Of Lorawan.
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readLorawanADRACKDelayWithSucBlock:(void (^)(id returnData))sucBlock
-                                  failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readDeviceInfoPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
+                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Heartbeat Payload Type.
 /*
@@ -1310,18 +1425,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readHeartbeatPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Positioning Payload Type.
-/*
-    @{
-    @"type":@"0",                   //@"0":Unconfirmed @"1":Confirmed
-    @"retransmissionTimes":@"1",
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readPositioningPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
-                                      failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Low-Power Payload Type.
 /*
     @{
@@ -1333,18 +1436,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readLowPowerPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Shock Payload Type.
-/*
-    @{
-    @"type":@"0",                   //@"0":Unconfirmed @"1":Confirmed
-    @"retransmissionTimes":@"1",
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readShockPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
-                                failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Event Payload Type.
 /*
@@ -1358,6 +1449,44 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readEventPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Positioning Payload Type.
+/*
+    @{
+    @"type":@"0",                   //@"0":Unconfirmed @"1":Confirmed
+    @"retransmissionTimes":@"1",
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readPositioningPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
+                                      failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Shock Payload Type.
+/*
+    @{
+    @"type":@"0",                   //@"0":Unconfirmed @"1":Confirmed
+    @"retransmissionTimes":@"1",
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readShockPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Man Down Detection Payload Type.
+/*
+    @{
+    @"type":@"0",                   //@"0":Unconfirmed @"1":Confirmed
+    @"retransmissionTimes":@"1",
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readManDownDetectionPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
+                                           failedBlock:(void (^)(NSError *error))failedBlock;
+
+
+
 /// GPS Limit Payload Type.
 /*
     @{
@@ -1369,19 +1498,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readGPSLimitPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock;
-
-
-/// Device Information Payload Type.
-/*
-    @{
-    @"type":@"0",                   //@"0":Unconfirmed @"1":Confirmed
-    @"retransmissionTimes":@"1",
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readDeviceInfoPayloadDataWithSucBlock:(void (^)(id returnData))sucBlock
-                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
 #pragma mark ****************************************辅助功能************************************************
 
@@ -1401,30 +1517,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readDownlinkPositioningStrategyWithSucBlock:(void (^)(id returnData))sucBlock
                                            failedBlock:(void (^)(NSError * error))failedBlock;
-
-/// Read three-axis sensor wake-up conditions.
-/*
- @{
-     @"threshold":threshold,        //x 16mg
-     @"duration":duration,          //x 10ms
- };
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readThreeAxisWakeupConditionsWithSucBlock:(void (^)(id returnData))sucBlock
-                                         failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Read three-axis data motion detection judgment parameters.
-/*
- @{
-     @"threshold":threshold,        //x 2mg
-     @"duration":duration,          //x 5ms
- };
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readThreeAxisMotionParametersWithSucBlock:(void (^)(id returnData))sucBlock
-                                         failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read the state of the Shock detection switch.
 /// @param sucBlock Success callback
@@ -1455,57 +1547,74 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readShockTimeoutWithSucBlock:(void (^)(id returnData))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read  Man Down Detection.
+/// Lighting Monitor Notify Status.
 /*
- @{
-     @"isOn":@(YES),    //Man Down Detection Status
-    @"notifyEventOnManDownStart":@(YES),
-    @"notifyEventOnManDownEnd":@(YES),
- };
+    @{
+    @"isOn":@(YES), //Lighting Monitor Status
+    @"alarmSwicth":@(YES),  //Alarm Swicth Status
+ }
 */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readManDownDetectionWithSucBlock:(void (^)(id returnData))sucBlock
-                                failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Read ManDown Detection Timeout.(Unit:Minute)
-/*
- @{
-    @"timeout":@"10",   //Unit:Minute
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readManDownDetectionTimeoutWithSucBlock:(void (^)(id returnData))sucBlock
-                                       failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Read the Positioning Strategy for ManDown Detection.
-/*
- @{
- @"strategy":@(1)
- }
- 
- 0:BLE
- 1:GPS
- 2:BLE+GPS
- 3:BLE*GPS
- 
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readManDownDetectionStrategyWithSucBlock:(void (^)(id returnData))sucBlock
++ (void)ct_readLightMonitorNotifyStatusWithSucBlock:(void (^)(id returnData))sucBlock
                                         failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Read ManDown Detection Report Interval.
+/// Lighting data simple rate interval.
 /*
- @{
-    @"interval":@"10",   //Unit:s
+    @{
+    @"interval":@"60", //Unit: S
  }
- */
+*/
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readManDownDetectionReportIntervalWithSucBlock:(void (^)(id returnData))sucBlock
-                                              failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_readLightDataSampleRateIntervalWithSucBlock:(void (^)(id returnData))sucBlock
+                                           failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Lighting Threshold.
+/*
+    @{
+    @"threshold":@"10", //Unit: Lux
+ }
+*/
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readLightThresholdWithSucBlock:(void (^)(id returnData))sucBlock
+                              failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Temperature Monitor Notify Status.
+/*
+    @{
+    @"isOn":@(YES), //Lighting Monitor Status
+    @"alarmSwicth":@(YES),  //Alarm Swicth Status
+ }
+*/
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readTemperatureMonitorNotifyStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                              failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Temperature data simple rate interval.
+/*
+    @{
+    @"interval":@"60", //Unit: S
+ }
+*/
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readTemperatureDataSampleRateIntervalWithSucBlock:(void (^)(id returnData))sucBlock
+                                                 failedBlock:(void (^)(NSError * error))failedBlock;
+
+/// Temperature Threshold.
+/*
+    @{
+    @"max":@"10", //Unit: ℃
+    @"min":@"-10", //Unit: ℃
+ }
+*/
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readTemperatureThresholdWithSucBlock:(void (^)(id returnData))sucBlock
+                                    failedBlock:(void (^)(NSError * error))failedBlock;
 
 /// Type of Alarm Function.
 /*
@@ -1620,98 +1729,92 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readSosAlarmNotifyStatusWithSucBlock:(void (^)(id returnData))sucBlock
                                     failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Temperature Monitor Notify Status.
+/// Read  Man Down Detection.
 /*
-    @{
-    @"isOn":@(YES), //Lighting Monitor Status
-    @"alarmSwicth":@(YES),  //Alarm Swicth Status
- }
+ @{
+     @"isOn":@(YES),    //Man Down Detection Status
+    @"notifyEventOnManDownStart":@(YES),
+    @"notifyEventOnManDownEnd":@(YES),
+ };
 */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readTemperatureMonitorNotifyStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                              failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readManDownDetectionWithSucBlock:(void (^)(id returnData))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Temperature data simple rate interval.
+/// Read ManDown Detection Timeout.(Unit:Minute)
 /*
-    @{
-    @"interval":@"60", //Unit: S
+ @{
+    @"timeout":@"10",   //Unit:Minute
  }
-*/
+ */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readTemperatureDataSampleRateIntervalWithSucBlock:(void (^)(id returnData))sucBlock
-                                                 failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readManDownDetectionTimeoutWithSucBlock:(void (^)(id returnData))sucBlock
+                                       failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Temperature Threshold.
+/// Read the Positioning Strategy for ManDown Detection.
 /*
-    @{
-    @"max":@"10", //Unit: ℃
-    @"min":@"-10", //Unit: ℃
+ @{
+ @"strategy":@(1)
  }
-*/
+ 
+ 0:BLE
+ 1:GPS
+ 2:BLE+GPS
+ 3:BLE*GPS
+ 
+ */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readTemperatureThresholdWithSucBlock:(void (^)(id returnData))sucBlock
-                                    failedBlock:(void (^)(NSError * error))failedBlock;
-
-/// Lighting Monitor Notify Status.
-/*
-    @{
-    @"isOn":@(YES), //Lighting Monitor Status
-    @"alarmSwicth":@(YES),  //Alarm Swicth Status
- }
-*/
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readLightMonitorNotifyStatusWithSucBlock:(void (^)(id returnData))sucBlock
++ (void)ct_readManDownDetectionStrategyWithSucBlock:(void (^)(id returnData))sucBlock
                                         failedBlock:(void (^)(NSError * error))failedBlock;
 
-/// Lighting data simple rate interval.
+/// Read ManDown Detection Report Interval.
 /*
-    @{
-    @"interval":@"60", //Unit: S
+ @{
+    @"interval":@"10",   //Unit:s
  }
-*/
+ */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readLightDataSampleRateIntervalWithSucBlock:(void (^)(id returnData))sucBlock
-                                           failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readManDownDetectionReportIntervalWithSucBlock:(void (^)(id returnData))sucBlock
+                                              failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Lighting Threshold.
+#pragma mark ****************************************定位参数************************************************
+/// GPS limit upload switch.
 /*
-    @{
-    @"threshold":@"10", //Unit: Lux
+ @{
+    @"isOn":@(YES)
  }
-*/
+ */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readLightThresholdWithSucBlock:(void (^)(id returnData))sucBlock
-                              failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readGpsLimitUploadStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                    failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Temperature.If the temperature monitoring function is turned off, the value is 0x80.
+/// Outdoor BLE Report Interval.
 /*
-    @{
-    @"temperature":@"10", //Unit: ℃
+ @{
+ @"interval":@"3",   //Unit:min
  }
-*/
+ */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readTemperatureWithSucBlock:(void (^)(id returnData))sucBlock
-                           failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readOutdoorBLEReportIntervalWithSucBlock:(void (^)(id returnData))sucBlock
+                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// illumination intensity.If the light monitoring function is turned off, the value is 0xFFFF.
+/// Outdoor GPS Report Interval.
 /*
-    @{
-    @"intensity":@"10", //Unit: Lux
+ @{
+ @"interval":@"3",   //Unit:min
  }
-*/
+ */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_readLightIlluminationIntensityWithSucBlock:(void (^)(id returnData))sucBlock
-                                          failedBlock:(void (^)(NSError * error))failedBlock;
++ (void)ct_readOutdoorGPSReportIntervalWithSucBlock:(void (^)(id returnData))sucBlock
+                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
-#pragma mark ****************************************蓝牙定位参数************************************************
 /// Bluetooth Fix Mechanism.
 /*
  @{
@@ -1745,8 +1848,18 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readBlePositioningNumberOfMacWithSucBlock:(void (^)(id returnData))sucBlock
                                          failedBlock:(void (^)(NSError *error))failedBlock;
 
-#pragma mark ****************************************GPS定位参数************************************************
-/// GPS Fix Positioning Timeout.
+/// Beacon Voltage Report in Bluetooth Fix.
+/*
+ @{
+ @"isOn":@(YES)
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_readBeaconVoltageReportInBleFixWithSucBlock:(void (^)(id returnData))sucBlock
+                                           failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// L76K GPS Fix Positioning Timeout.
 /*
  @{
  @"timeout":@"3",   //Unit:s
@@ -1757,7 +1870,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_readGPSFixPositioningTimeoutWithSucBlock:(void (^)(id returnData))sucBlock
                                             failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// GPS Fix PDOP.
+/// L76K GPS Fix PDOP.
 /*
  @{
  @"pdop":@"3",   //Unit:0.1
@@ -1767,28 +1880,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)ct_readGPSFixPDOPWithSucBlock:(void (^)(id returnData))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Outdoor BLE Report Interval.
-/*
- @{
- @"interval":@"3",   //Unit:min
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readOutdoorBLEReportIntervalWithSucBlock:(void (^)(id returnData))sucBlock
-                                        failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Outdoor GPS Report Interval.
-/*
- @{
- @"interval":@"3",   //Unit:min
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_readOutdoorGPSReportIntervalWithSucBlock:(void (^)(id returnData))sucBlock
-                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
 @end
 

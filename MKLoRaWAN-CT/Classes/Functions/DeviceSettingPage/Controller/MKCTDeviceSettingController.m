@@ -568,6 +568,13 @@ MKTextFieldCellDelegate>
     return _section7List;
 }
 
+- (NSMutableArray *)section8List {
+    if (!_section8List) {
+        _section8List = [NSMutableArray array];
+    }
+    return _section8List;
+}
+
 - (NSMutableArray *)headerList {
     if (!_headerList) {
         _headerList = [NSMutableArray array];

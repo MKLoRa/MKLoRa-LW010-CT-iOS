@@ -234,6 +234,11 @@ MKTextButtonCellDelegate>
     [self loadSection3Datas];
     [self loadSection4Datas];
     
+    for (NSInteger i = 0; i < 5; i ++) {
+        MKTableSectionLineHeaderModel *headerModel = [[MKTableSectionLineHeaderModel alloc] init];
+        [self.headerList addObject:headerModel];
+    }
+    
     [self.tableView reloadData];
 }
 
@@ -349,6 +354,13 @@ MKTextButtonCellDelegate>
         _section4List = [NSMutableArray array];
     }
     return _section4List;
+}
+
+- (NSMutableArray *)headerList {
+    if (!_headerList) {
+        _headerList = [NSMutableArray array];
+    }
+    return _headerList;
 }
 
 - (MKCTManDownDataModel *)dataModel {

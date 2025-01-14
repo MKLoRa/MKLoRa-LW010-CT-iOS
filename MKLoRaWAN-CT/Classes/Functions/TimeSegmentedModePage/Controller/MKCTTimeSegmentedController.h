@@ -1,8 +1,8 @@
 //
-//  MKMUFilterByBXPSensorInfoController.h
-//  MKLoRaWAN-MTE_Example
+//  MKCTTimeSegmentedController.h
+//  MKLoRaWAN-CT_Example
 //
-//  Created by aa on 2024/7/5.
+//  Created by aa on 2024/11/21.
 //  Copyright © 2024 lovexiaoxia. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MKMUFilterByBXPSensorInfoController : MKBaseViewController
+@interface MKCTTimeSegmentedController : MKBaseViewController
 
 @end
 

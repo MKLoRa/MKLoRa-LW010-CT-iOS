@@ -64,6 +64,7 @@ MKTextFieldCellDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self loadSubViews];
+    [self loadSectionDatas];
     [self readDatasFromDevice];
 }
 
@@ -198,7 +199,7 @@ MKTextFieldCellDelegate>
     [self.dataModel readDataWithSucBlock:^{
         @strongify(self);
         [[MKHudManager share] hide];
-        [self loadSectionDatas];
+        [self updateCellValues];
     } failedBlock:^(NSError * _Nonnull error) {
         @strongify(self);
         [[MKHudManager share] hide];
@@ -212,12 +213,35 @@ MKTextFieldCellDelegate>
     [self.dataModel configDataWithSucBlock:^{
         @strongify(self);
         [[MKHudManager share] hide];
-        [self.view showCentralToast:@"Success"];
+        [self readDatasFromDevice];
     } failedBlock:^(NSError * _Nonnull error) {
         @strongify(self);
         [[MKHudManager share] hide];
         [self.view showCentralToast:error.userInfo[@"errorInfo"]];
     }];
+}
+
+- (void)updateCellValues {
+    MKTextSwitchCellModel *switchCellModel = self.section0List[0];
+    switchCellModel.isOn = self.dataModel.isOn;
+    
+    MKTextFieldCellModel *sampleCellModel = self.section1List[0];
+    sampleCellModel.textFieldValue = self.dataModel.sampleRate;
+    
+    MKNormalTextCellModel *illuminationCellModel = self.section2List[0];
+    if (self.dataModel.isOn) {
+        illuminationCellModel.rightMsg = [self.dataModel.intensity stringByAppendingString:@" lux"];
+    }else {
+        illuminationCellModel.rightMsg = @"";
+    }
+    
+    MKTextSwitchCellModel *lightThresholdSwitchCellModel = self.section3List[0];
+    lightThresholdSwitchCellModel.isOn = self.dataModel.alarmSwitch;
+    
+    MKTextFieldCellModel *lightThresholdCellModel = self.section4List[0];
+    lightThresholdCellModel.textFieldValue = self.dataModel.lightThreshold;
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark - loadSectionDatas
@@ -240,7 +264,6 @@ MKTextFieldCellDelegate>
     MKTextSwitchCellModel *cellModel = [[MKTextSwitchCellModel alloc] init];
     cellModel.index = 0;
     cellModel.msg = @"Function Switch";
-    cellModel.isOn = self.dataModel.isOn;
     [self.section0List addObject:cellModel];
 }
 
@@ -250,7 +273,6 @@ MKTextFieldCellDelegate>
     cellModel.msg = @"Sample Rate";
     cellModel.textPlaceholder = @"1~3600";
     cellModel.textFieldType = mk_realNumberOnly;
-    cellModel.textFieldValue = self.dataModel.sampleRate;
     cellModel.maxLength = 4;
     cellModel.unit = @"S";
     [self.section1List addObject:cellModel];
@@ -259,7 +281,6 @@ MKTextFieldCellDelegate>
 - (void)loadSection2Datas {
     MKNormalTextCellModel *cellModel = [[MKNormalTextCellModel alloc] init];
     cellModel.leftMsg = @"illumination intensity:";
-    cellModel.rightMsg = [self.dataModel.intensity stringByAppendingString:@" lux"];
     [self.section2List addObject:cellModel];
 }
 
@@ -267,7 +288,6 @@ MKTextFieldCellDelegate>
     MKTextSwitchCellModel *cellModel = [[MKTextSwitchCellModel alloc] init];
     cellModel.index = 1;
     cellModel.msg = @"Light Threshold Alarm Swicth";
-    cellModel.isOn = self.dataModel.alarmSwitch;
     [self.section3List addObject:cellModel];
 }
 
@@ -277,7 +297,6 @@ MKTextFieldCellDelegate>
     cellModel.msg = @"Light Threshold";
     cellModel.textPlaceholder = @"10~200";
     cellModel.textFieldType = mk_realNumberOnly;
-    cellModel.textFieldValue = self.dataModel.lightThreshold;
     cellModel.maxLength = 3;
     cellModel.unit = @"lux";
     [self.section4List addObject:cellModel];

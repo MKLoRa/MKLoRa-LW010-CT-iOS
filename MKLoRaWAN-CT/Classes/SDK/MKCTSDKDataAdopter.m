@@ -304,12 +304,14 @@
 + (NSString *)fetchDeviceModeValue:(mk_ct_deviceMode)deviceMode {
     switch (deviceMode) {
         case mk_ct_deviceMode_standbyMode:
-            return @"01";
+            return @"00";
         case mk_ct_deviceMode_periodicMode:
-            return @"02";
+            return @"01";
         case mk_ct_deviceMode_timingMode:
-            return @"03";
+            return @"02";
         case mk_ct_deviceMode_motionMode:
+            return @"03";
+        case mk_ct_deviceMode_timeSegmentedMode:
             return @"04";
     }
 }
@@ -336,48 +338,155 @@
     if (!MKValidArray(dataList)) {
         return @"00";
     }
-    NSString *len = [MKBLEBaseSDKAdopter fetchHexValue:dataList.count byteLen:1];
+    NSString *len = [MKBLEBaseSDKAdopter fetchHexValue:(2 * dataList.count) byteLen:1];
     NSString *resultString = len;
     for (NSInteger i = 0; i < dataList.count; i ++) {
         id <mk_ct_timingModeReportingTimePointProtocol>data = dataList[i];
-        if (data.hour < 0 || data.hour > 23 || data.minuteGear < 0 || data.minuteGear > 3) {
+        if (data.hour < 0 || data.hour > 23 || data.minuteGear < 0 || data.minuteGear > 59) {
             return @"";
         }
         NSInteger timeValue = 0;
         if (data.hour == 0 && data.minuteGear == 0) {
-            timeValue = 96;
+            timeValue = 1440;
         }else {
-            timeValue = 4 * data.hour + data.minuteGear;
+            timeValue = 60 * data.hour + data.minuteGear;
         }
-        NSString *timeString = [MKBLEBaseSDKAdopter fetchHexValue:timeValue byteLen:1];
+        NSString *timeString = [MKBLEBaseSDKAdopter fetchHexValue:timeValue byteLen:2];
+        resultString = [resultString stringByAppendingString:timeString];
+    }
+    return resultString;
+}
+
++ (NSString *)fetchimeSegmentedModeTimePeriodSetting:(NSArray <mk_ct_timeSegmentedModeTimePeriodSettingProtocol>*)dataList {
+    if (dataList.count > 10) {
+        return @"";
+    }
+    if (!MKValidArray(dataList)) {
+        return @"00";
+    }
+    NSString *len = [MKBLEBaseSDKAdopter fetchHexValue:(8 * dataList.count) byteLen:1];
+    NSString *resultString = len;
+        
+    for (NSInteger i = 0; i < dataList.count; i ++) {
+        id <mk_ct_timeSegmentedModeTimePeriodSettingProtocol>data = dataList[i];
+        if (data.startHour < 0 || data.startHour > 23 || data.startMinuteGear < 0 || data.startMinuteGear > 59) {
+            return @"";
+        }
+        if (data.endHour < 0 || data.endHour > 23 || data.endMinuteGear < 0 || data.endMinuteGear > 59) {
+            return @"";
+        }
+        if (data.interval < 30 || data.interval > 86400) {
+            return @"";
+        }
+        NSInteger startTimeValue = 0;
+        if (data.startHour == 0 && data.startMinuteGear == 0) {
+            startTimeValue = 1440;
+        }else {
+            startTimeValue = 60 * data.startHour + data.startMinuteGear;
+        }
+        NSInteger endTimeValue = 0;
+        if (data.endHour == 0 && data.endMinuteGear == 0) {
+            endTimeValue = 1440;
+        }else {
+            endTimeValue = 60 * data.endHour + data.endMinuteGear;
+        }
+        if (startTimeValue >= endTimeValue) {
+            return @"";
+        }
+        
+        if (i > 0) {
+            id <mk_ct_timeSegmentedModeTimePeriodSettingProtocol>previousData = dataList[i - 1];
+            NSInteger preEndTimeValue = 0;
+            if (previousData.endHour == 0 && previousData.endMinuteGear == 0) {
+                preEndTimeValue = 1440;
+            }else {
+                preEndTimeValue = 60 * previousData.endHour + previousData.endMinuteGear;
+            }
+            
+            if (startTimeValue <= preEndTimeValue) {
+                return @"";
+            }
+        }
+        
+        NSString *startTimeString = [MKBLEBaseSDKAdopter fetchHexValue:startTimeValue byteLen:2];
+        NSString *endTimeString = [MKBLEBaseSDKAdopter fetchHexValue:endTimeValue byteLen:2];
+        NSString *intervalString = [MKBLEBaseSDKAdopter fetchHexValue:data.interval byteLen:4];
+        NSString *timeString = [NSString stringWithFormat:@"%@%@%@",startTimeString,endTimeString,intervalString];
         resultString = [resultString stringByAppendingString:timeString];
     }
     return resultString;
 }
 
 + (NSArray <NSDictionary *>*)parseTimingModeReportingTimePoint:(NSString *)content {
-    if (!MKValidStr(content) || content.length < 2) {
+    if (!MKValidStr(content) || content.length < 4) {
         return @[];
     }
     if ([content isEqualToString:@"00"]) {
         return @[];
     }
-    NSInteger totalByte = content.length / 2;
+    NSInteger totalByte = content.length / 4;
     NSMutableArray *tempList = [NSMutableArray array];
     
     for (NSInteger i = 0; i < totalByte; i ++) {
-        NSString *tempString = [content substringWithRange:NSMakeRange(i * 2, 2)];
+        NSString *tempString = [content substringWithRange:NSMakeRange(i * 4, 4)];
         NSInteger tempValue = [MKBLEBaseSDKAdopter getDecimalWithHex:tempString range:NSMakeRange(0, tempString.length)];
         NSInteger hour = 0;
         NSInteger minuteGear = 0;
-        if (tempValue < 96) {
+        if (tempValue < 1440) {
             //如果是96，表示00:00
-            hour = tempValue / 4;
-            minuteGear = tempValue % 4;
+            hour = tempValue / 60;
+            minuteGear = tempValue % 60;
         }
         [tempList addObject:@{
             @"hour":@(hour),
             @"minuteGear":@(minuteGear),
+        }];
+    }
+    
+    return tempList;
+}
+
++ (NSArray <NSDictionary *>*)parseTimeSegmentedModeTimePeriodSetting:(NSString *)content {
+    if (!MKValidStr(content) || content.length < 16) {
+        return @[];
+    }
+    if ([content isEqualToString:@"00"]) {
+        return @[];
+    }
+    NSInteger totalByte = content.length / 16;
+    NSMutableArray *tempList = [NSMutableArray array];
+    
+    for (NSInteger i = 0; i < totalByte; i ++) {
+        NSString *tempString = [content substringWithRange:NSMakeRange(i * 16, 16)];
+        
+        NSInteger startTempValue = [MKBLEBaseSDKAdopter getDecimalWithHex:tempString range:NSMakeRange(0, 4)];
+        NSInteger startHour = 0;
+        NSInteger startMinuteGear = 0;
+        if (startTempValue < 1440) {
+            //如果是96，表示00:00
+            startHour = startTempValue / 60;
+            startMinuteGear = startTempValue % 60;
+        }
+        
+        NSInteger endTempValue = [MKBLEBaseSDKAdopter getDecimalWithHex:tempString range:NSMakeRange(4, 4)];
+        NSInteger endHour = 0;
+        NSInteger endMinuteGear = 0;
+        if (endTempValue < 1440) {
+            //如果是96，表示00:00
+            endHour = endTempValue / 60;
+            endMinuteGear = endTempValue % 60;
+        }
+        
+        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:tempString range:NSMakeRange(8, 8)];
+        
+        
+        
+        [tempList addObject:@{
+            @"startHour":@(startHour),
+            @"startMinuteGear":@(startMinuteGear),
+            @"endHour":@(endHour),
+            @"endMinuteGear":@(endMinuteGear),
+            @"reportInterval":interval,
         }];
     }
     

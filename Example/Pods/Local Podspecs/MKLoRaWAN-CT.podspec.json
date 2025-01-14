@@ -381,6 +381,9 @@
                 ],
                 "MKLoRaWAN-CT/Functions/MotionModePage/Controller": [
 
+                ],
+                "MKLoRaWAN-CT/Functions/TimeSegmentedModePage/Controller": [
+
                 ]
               }
             }
@@ -563,9 +566,6 @@
                     ],
                     "MKLoRaWAN-CT/Functions/FilterPages/FilterByPirPage/Controller": [
 
-                    ],
-                    "MKLoRaWAN-CT/Functions/FilterPages/FilterByBXPSensorInfoPage/Controller": [
-
                     ]
                   }
                 },
@@ -662,24 +662,6 @@
                 {
                   "name": "Model",
                   "source_files": "MKLoRaWAN-CT/Classes/Functions/FilterPages/FilterByBXPButtonPage/Model/**"
-                }
-              ]
-            },
-            {
-              "name": "FilterByBXPSensorInfoPage",
-              "subspecs": [
-                {
-                  "name": "Controller",
-                  "source_files": "MKLoRaWAN-CT/Classes/Functions/FilterPages/FilterByBXPSensorInfoPage/Controller/**",
-                  "dependencies": {
-                    "MKLoRaWAN-CT/Functions/FilterPages/FilterByBXPSensorInfoPage/Model": [
-
-                    ]
-                  }
-                },
-                {
-                  "name": "Model",
-                  "source_files": "MKLoRaWAN-CT/Classes/Functions/FilterPages/FilterByBXPSensorInfoPage/Model/**"
                 }
               ]
             },
@@ -965,6 +947,9 @@
               "name": "Controller",
               "source_files": "MKLoRaWAN-CT/Classes/Functions/PositionPage/Controller/**",
               "dependencies": {
+                "MKLoRaWAN-CT/Functions/PositionPage/Model": [
+
+                ],
                 "MKLoRaWAN-CT/Functions/BleFixPage/Controller": [
 
                 ],
@@ -975,6 +960,10 @@
 
                 ]
               }
+            },
+            {
+              "name": "Model",
+              "source_files": "MKLoRaWAN-CT/Classes/Functions/PositionPage/Model/**"
             }
           ]
         },
@@ -1117,6 +1106,31 @@
             {
               "name": "View",
               "source_files": "MKLoRaWAN-CT/Classes/Functions/TempMonitorSettingsPage/View/**"
+            }
+          ]
+        },
+        {
+          "name": "TimeSegmentedModePage",
+          "subspecs": [
+            {
+              "name": "Controller",
+              "source_files": "MKLoRaWAN-CT/Classes/Functions/TimeSegmentedModePage/Controller/**",
+              "dependencies": {
+                "MKLoRaWAN-CT/Functions/TimeSegmentedModePage/Model": [
+
+                ],
+                "MKLoRaWAN-CT/Functions/TimeSegmentedModePage/View": [
+
+                ]
+              }
+            },
+            {
+              "name": "Model",
+              "source_files": "MKLoRaWAN-CT/Classes/Functions/TimeSegmentedModePage/Model/**"
+            },
+            {
+              "name": "View",
+              "source_files": "MKLoRaWAN-CT/Classes/Functions/TimeSegmentedModePage/View/**"
             }
           ]
         },

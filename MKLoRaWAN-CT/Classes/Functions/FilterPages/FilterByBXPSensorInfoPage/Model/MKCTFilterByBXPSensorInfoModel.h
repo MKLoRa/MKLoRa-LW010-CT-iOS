@@ -1,6 +1,6 @@
 //
-//  MKCTFilterByBXPSensorInfoModel.h
-//  MKLoRaWAN-CT_Example
+//  MKMUFilterByBXPSensorInfoModel.h
+//  MKLoRaWAN-MTE_Example
 //
 //  Created by aa on 2024/7/5.
 //  Copyright © 2024 lovexiaoxia. All rights reserved.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MKCTFilterByBXPSensorInfoModel : NSObject
+@interface MKMUFilterByBXPSensorInfoModel : NSObject
 
 @property (nonatomic, assign)BOOL isOn;
 

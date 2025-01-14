@@ -161,7 +161,7 @@ static dispatch_once_t onceToken;
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
         [[NSNotificationCenter defaultCenter] postNotificationName:mk_ct_deviceDisconnectTypeNotification
                                                             object:nil
-                                                          userInfo:@{@"type":[content substringWithRange:NSMakeRange(8, 2)]}];
+                                                          userInfo:@{@"type":[content substringWithRange:NSMakeRange(10, 2)]}];
         return;
     }
     
@@ -346,7 +346,7 @@ static dispatch_once_t onceToken;
 }
 
 - (void)sendPasswordToDevice {
-    NSString *commandData = @"ed010108";
+    NSString *commandData = @"ed01000108";
     for (NSInteger i = 0; i < self.password.length; i ++) {
         int asciiCode = [self.password characterAtIndex:i];
         commandData = [commandData stringByAppendingString:[NSString stringWithFormat:@"%1lx",(unsigned long)asciiCode]];

@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, mk_ct_deviceMode) {
     mk_ct_deviceMode_periodicMode,        //Periodic mode
     mk_ct_deviceMode_timingMode,          //Timing mode
     mk_ct_deviceMode_motionMode,          //Motion Mode
+    mk_ct_deviceMode_timeSegmentedMode,   //Time-Segmented Mode
 };
 
 typedef NS_ENUM(NSInteger, mk_ct_lowPowerPrompt) {
@@ -186,21 +187,22 @@ typedef NS_ENUM(NSInteger, mk_ct_delayResponseStatus) {
 
 @end
 
-@protocol mk_ct_motionModeEventsProtocol <NSObject>
+@protocol mk_ct_timeSegmentedModeTimePeriodSettingProtocol <NSObject>
 
-@property (nonatomic, assign)BOOL notifyEventOnStart;
+/// 0~23
+@property (nonatomic, assign)NSInteger startHour;
 
-@property (nonatomic, assign)BOOL fixOnStart;
+/// 0-59
+@property (nonatomic, assign)NSInteger startMinuteGear;
 
-@property (nonatomic, assign)BOOL notifyEventInTrip;
+/// 0~23
+@property (nonatomic, assign)NSInteger endHour;
 
-@property (nonatomic, assign)BOOL fixInTrip;
+/// 0-59
+@property (nonatomic, assign)NSInteger endMinuteGear;
 
-@property (nonatomic, assign)BOOL notifyEventOnEnd;
-
-@property (nonatomic, assign)BOOL fixOnEnd;
-
-@property (nonatomic, assign)BOOL fixOnStationaryState;
+/// Report Interval   30s - 86400s
+@property (nonatomic, assign)NSInteger interval;
 
 @end
 

@@ -8,27 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "MKCTSDKNormalDefines.h"
-
 NS_ASSUME_NONNULL_BEGIN
-
-@interface MKCTMotionModeEventsModel : NSObject<mk_ct_motionModeEventsProtocol>
-
-@property (nonatomic, assign)BOOL fixOnStart;
-
-@property (nonatomic, assign)BOOL fixInTrip;
-
-@property (nonatomic, assign)BOOL fixOnEnd;
-
-@property (nonatomic, assign)BOOL notifyEventOnStart;
-
-@property (nonatomic, assign)BOOL notifyEventInTrip;
-
-@property (nonatomic, assign)BOOL notifyEventOnEnd;
-
-@property (nonatomic, assign)BOOL fixOnStationaryState;
-
-@end
 
 @interface MKCTMotionModeModel : NSObject
 

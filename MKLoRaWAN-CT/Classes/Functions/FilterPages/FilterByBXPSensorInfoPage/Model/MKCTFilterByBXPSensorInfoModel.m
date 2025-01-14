@@ -1,20 +1,20 @@
 //
-//  MKCTFilterByBXPSensorInfoModel.m
-//  MKLoRaWAN-CT_Example
+//  MKMUFilterByBXPSensorInfoModel.m
+//  MKLoRaWAN-MTE_Example
 //
 //  Created by aa on 2024/7/5.
 //  Copyright © 2024 lovexiaoxia. All rights reserved.
 //
 
-#import "MKCTFilterByBXPSensorInfoModel.h"
+#import "MKMUFilterByBXPSensorInfoModel.h"
 
 #import "MKMacroDefines.h"
 #import "NSString+MKAdd.h"
 
-#import "MKCTInterface.h"
-#import "MKCTInterface+MKCTConfig.h"
+#import "MKMUInterface.h"
+#import "MKMUInterface+MKMUConfig.h"
 
-@interface MKCTFilterByBXPSensorInfoModel ()
+@interface MKMUFilterByBXPSensorInfoModel ()
 
 @property (nonatomic, strong)dispatch_queue_t readQueue;
 
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation MKCTFilterByBXPSensorInfoModel
+@implementation MKMUFilterByBXPSensorInfoModel
 
 - (void)readDataWithSucBlock:(void (^)(void))sucBlock failedBlock:(void (^)(NSError *error))failedBlock {
     dispatch_async(self.readQueue, ^{
@@ -86,7 +86,7 @@
 
 - (BOOL)readFilterStatus {
     __block BOOL success = NO;
-    [MKCTInterface ct_readBXPSensorInfoFilterByTagIDStatusWithSucBlock:^(id  _Nonnull returnData) {
+    [MKMUInterface mu_readBXPSensorInfoFilterByTagIDStatusWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
         self.isOn = [returnData[@"result"][@"isOn"] boolValue];
         dispatch_semaphore_signal(self.semaphore);
@@ -99,7 +99,7 @@
 
 - (BOOL)configFilterStatus {
     __block BOOL success = NO;
-    [MKCTInterface ct_configBXPSensorInfoFilterByTagIDStatus:self.isOn sucBlock:^{
+    [MKMUInterface mu_configBXPSensorInfoFilterByTagIDStatus:self.isOn sucBlock:^{
         success = YES;
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
@@ -111,7 +111,7 @@
 
 - (BOOL)readFilterPreciseMatch {
     __block BOOL success = NO;
-    [MKCTInterface ct_readBXPSensorInfoPreciseMatchTagIDStatusWithSucBlock:^(id  _Nonnull returnData) {
+    [MKMUInterface mu_readBXPSensorInfoPreciseMatchTagIDStatusWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
         self.precise = [returnData[@"result"][@"isOn"] boolValue];
         dispatch_semaphore_signal(self.semaphore);
@@ -124,7 +124,7 @@
 
 - (BOOL)configFilterPreciseMatch {
     __block BOOL success = NO;
-    [MKCTInterface ct_configBXPSensorInfoPreciseMatchTagIDStatus:self.precise sucBlock:^{
+    [MKMUInterface mu_configBXPSensorInfoPreciseMatchTagIDStatus:self.precise sucBlock:^{
         success = YES;
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
@@ -136,7 +136,7 @@
 
 - (BOOL)readReverseFilter {
     __block BOOL success = NO;
-    [MKCTInterface ct_readBXPSensorInfoReverseFilterTagIDStatusWithSucBlock:^(id  _Nonnull returnData) {
+    [MKMUInterface mu_readBXPSensorInfoReverseFilterTagIDStatusWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
         self.reverse = [returnData[@"result"][@"isOn"] boolValue];
         dispatch_semaphore_signal(self.semaphore);
@@ -149,7 +149,7 @@
 
 - (BOOL)configReverseFilter {
     __block BOOL success = NO;
-    [MKCTInterface ct_configBXPSensorInfoReverseFilterTagIDStatus:self.reverse sucBlock:^{
+    [MKMUInterface mu_configBXPSensorInfoReverseFilterTagIDStatus:self.reverse sucBlock:^{
         success = YES;
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
@@ -161,7 +161,7 @@
 
 - (BOOL)readTagIDList {
     __block BOOL success = NO;
-    [MKCTInterface ct_readBXPSensorInfoFilterBXPTagIDListWithSucBlock:^(id  _Nonnull returnData) {
+    [MKMUInterface mu_readBXPSensorInfoFilterBXPTagIDListWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
         self.tagIDList = returnData[@"result"][@"tagIDList"];
         dispatch_semaphore_signal(self.semaphore);
@@ -174,7 +174,7 @@
 
 - (BOOL)configTagIDList:(NSArray <NSString *>*)list {
     __block BOOL success = NO;
-    [MKCTInterface ct_configBXPSensorInfoFilterBXPTagIDList:list sucBlock:^{
+    [MKMUInterface mu_configBXPSensorInfoFilterBXPTagIDList:list sucBlock:^{
         success = YES;
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {

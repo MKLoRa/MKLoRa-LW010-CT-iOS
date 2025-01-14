@@ -1,12 +1,12 @@
 //
-//  MKCTFilterByBXPSensorInfoController.m
-//  MKLoRaWAN-CT_Example
+//  MKMUFilterByBXPSensorInfoController.m
+//  MKLoRaWAN-MTE_Example
 //
 //  Created by aa on 2024/7/5.
 //  Copyright © 2024 lovexiaoxia. All rights reserved.
 //
 
-#import "MKCTFilterByBXPSensorInfoController.h"
+#import "MKMUFilterByBXPSensorInfoController.h"
 
 #import "Masonry.h"
 
@@ -23,15 +23,15 @@
 #import "MKCustomUIAdopter.h"
 #import "MKTableSectionLineHeader.h"
 
-#import "MKCTFilterEditSectionHeaderView.h"
+#import "MKMUFilterEditSectionHeaderView.h"
 
-#import "MKCTFilterByBXPSensorInfoModel.h"
+#import "MKMUFilterByBXPSensorInfoModel.h"
 
-@interface MKCTFilterByBXPSensorInfoController ()<UITableViewDelegate,
+@interface MKMUFilterByBXPSensorInfoController ()<UITableViewDelegate,
 UITableViewDataSource,
 mk_textSwitchCellDelegate,
 MKTextFieldCellDelegate,
-MKCTFilterEditSectionHeaderViewDelegate>
+MKMUFilterEditSectionHeaderViewDelegate>
 
 @property (nonatomic, strong)MKBaseTableView *tableView;
 
@@ -41,14 +41,14 @@ MKCTFilterEditSectionHeaderViewDelegate>
 
 @property (nonatomic, strong)NSMutableArray *section2List;
 
-@property (nonatomic, strong)MKCTFilterByBXPSensorInfoModel *dataModel;
+@property (nonatomic, strong)MKMUFilterByBXPSensorInfoModel *dataModel;
 
 @end
 
-@implementation MKCTFilterByBXPSensorInfoController
+@implementation MKMUFilterByBXPSensorInfoController
 
 - (void)dealloc {
-    NSLog(@"MKCTFilterByBXPSensorInfoController销毁");
+    NSLog(@"MKMUFilterByBXPSensorInfoController销毁");
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -82,10 +82,10 @@ MKCTFilterEditSectionHeaderViewDelegate>
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 2) {
-        MKCTFilterEditSectionHeaderViewModel *headerModel = [[MKCTFilterEditSectionHeaderViewModel alloc] init];
+        MKMUFilterEditSectionHeaderViewModel *headerModel = [[MKMUFilterEditSectionHeaderViewModel alloc] init];
         headerModel.index = 0;
         headerModel.msg = @"Edit Tag ID";
-        MKCTFilterEditSectionHeaderView *headerView = [MKCTFilterEditSectionHeaderView initHeaderViewWithTableView:tableView];
+        MKMUFilterEditSectionHeaderView *headerView = [MKMUFilterEditSectionHeaderView initHeaderViewWithTableView:tableView];
         headerView.dataModel = headerModel;
         headerView.delegate = self;
         return headerView;
@@ -172,11 +172,11 @@ MKCTFilterEditSectionHeaderViewDelegate>
     cellModel.textFieldValue = value;
 }
 
-#pragma  mark - MKCTFilterEditSectionHeaderViewDelegate
+#pragma  mark - MKMUFilterEditSectionHeaderViewDelegate
 
 /// 加号点击事件
 /// @param index 所在index
-- (void)mk_ct_filterEditSectionHeaderView_addButtonPressed:(NSInteger)index {
+- (void)mk_mu_filterEditSectionHeaderView_addButtonPressed:(NSInteger)index {
     if (self.section2List.count >= 10) {
         [self.view showCentralToast:@"You can set up to 10 filters!"];
         return;
@@ -194,7 +194,7 @@ MKCTFilterEditSectionHeaderViewDelegate>
 
 /// 减号点击事件
 /// @param index 所在index
-- (void)mk_ct_filterEditSectionHeaderView_subButtonPressed:(NSInteger)index {
+- (void)mk_mu_filterEditSectionHeaderView_subButtonPressed:(NSInteger)index {
     if (self.section2List.count == 0) {
         return;
     }
@@ -285,7 +285,7 @@ MKCTFilterEditSectionHeaderViewDelegate>
 #pragma mark - UI
 - (void)loadSubViews {
     self.defaultTitle = @"BXP-Sensor Info Filter";
-    [self.rightButton setImage:LOADICON(@"MKLoRaWAN-CT", @"MKCTFilterByBXPSensorInfoController", @"ct_slotSaveIcon.png") forState:UIControlStateNormal];
+    [self.rightButton setImage:LOADICON(@"MKLoRaWAN-MTE", @"MKMUFilterByBXPSensorInfoController", @"mu_slotSaveIcon.png") forState:UIControlStateNormal];
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
@@ -326,9 +326,9 @@ MKCTFilterEditSectionHeaderViewDelegate>
     return _section2List;
 }
 
-- (MKCTFilterByBXPSensorInfoModel *)dataModel {
+- (MKMUFilterByBXPSensorInfoModel *)dataModel {
     if (!_dataModel) {
-        _dataModel = [[MKCTFilterByBXPSensorInfoModel alloc] init];
+        _dataModel = [[MKMUFilterByBXPSensorInfoModel alloc] init];
     }
     return _dataModel;
 }

@@ -76,7 +76,11 @@
         return;
     }
     //顶部
-    self.temperatureLabel.text = [NSString stringWithFormat:@"%@%@",_dataModel.temperature,@"℃"];
+    if (!ValidStr(_dataModel.temperature)) {
+        self.temperatureLabel.text = @"";
+    }else {
+        self.temperatureLabel.text = [NSString stringWithFormat:@"%@%@",_dataModel.temperature,@"℃"];
+    }
 }
 
 #pragma mark - getter

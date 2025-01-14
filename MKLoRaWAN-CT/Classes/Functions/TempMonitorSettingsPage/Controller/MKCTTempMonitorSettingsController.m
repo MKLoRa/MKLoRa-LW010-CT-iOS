@@ -66,6 +66,7 @@ MKCTTempMonitorThresholdCellDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self loadSubViews];
+    [self loadSectionDatas];
     [self readDatasFromDevice];
 }
 
@@ -211,7 +212,7 @@ MKCTTempMonitorThresholdCellDelegate>
     [self.dataModel readDataWithSucBlock:^{
         @strongify(self);
         [[MKHudManager share] hide];
-        [self loadSectionDatas];
+        [self updateCellValues];
     } failedBlock:^(NSError * _Nonnull error) {
         @strongify(self);
         [[MKHudManager share] hide];
@@ -225,12 +226,39 @@ MKCTTempMonitorThresholdCellDelegate>
     [self.dataModel configDataWithSucBlock:^{
         @strongify(self);
         [[MKHudManager share] hide];
-        [self.view showCentralToast:@"Success"];
+        [self readDatasFromDevice];
     } failedBlock:^(NSError * _Nonnull error) {
         @strongify(self);
         [[MKHudManager share] hide];
         [self.view showCentralToast:error.userInfo[@"errorInfo"]];
     }];
+}
+
+- (void)updateCellValues {
+    MKTextSwitchCellModel *switchCellModel = self.section0List[0];
+    switchCellModel.isOn = self.dataModel.isOn;
+    
+    MKTextFieldCellModel *sampleCellModel = self.section1List[0];
+    sampleCellModel.textFieldValue = self.dataModel.sampleRate;
+    
+    MKCTTempMonitorValueCellModel *tempMonitorValueCellModel = self.section2List[0];
+    if (self.dataModel.isOn) {
+        tempMonitorValueCellModel.temperature = self.dataModel.temperature;
+    }else {
+        tempMonitorValueCellModel.temperature = @"";
+    }
+    
+    
+    MKTextSwitchCellModel *tempThresholdSwitchCellModel = self.section3List[0];
+    tempThresholdSwitchCellModel.isOn = self.dataModel.alarmSwitch;
+    
+    MKCTTempMonitorThresholdCellModel *maxCellModel = self.section4List[0];
+    maxCellModel.value = self.dataModel.maxThreshold;
+    
+    MKCTTempMonitorThresholdCellModel *minCellModel = self.section4List[1];
+    minCellModel.value = self.dataModel.minThreshold;
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark - loadSectionDatas
@@ -253,7 +281,6 @@ MKCTTempMonitorThresholdCellDelegate>
     MKTextSwitchCellModel *cellModel = [[MKTextSwitchCellModel alloc] init];
     cellModel.index = 0;
     cellModel.msg = @"Function Switch";
-    cellModel.isOn = self.dataModel.isOn;
     [self.section0List addObject:cellModel];
 }
 
@@ -263,7 +290,6 @@ MKCTTempMonitorThresholdCellDelegate>
     cellModel.msg = @"Sample Rate";
     cellModel.textPlaceholder = @"1~3600";
     cellModel.textFieldType = mk_realNumberOnly;
-    cellModel.textFieldValue = self.dataModel.sampleRate;
     cellModel.maxLength = 4;
     cellModel.unit = @"S";
     [self.section1List addObject:cellModel];
@@ -271,7 +297,6 @@ MKCTTempMonitorThresholdCellDelegate>
 
 - (void)loadSection2Datas {
     MKCTTempMonitorValueCellModel *cellModel = [[MKCTTempMonitorValueCellModel alloc] init];
-    cellModel.temperature = self.dataModel.temperature;
     [self.section2List addObject:cellModel];
 }
 
@@ -287,13 +312,11 @@ MKCTTempMonitorThresholdCellDelegate>
     MKCTTempMonitorThresholdCellModel *cellModel1 = [[MKCTTempMonitorThresholdCellModel alloc] init];
     cellModel1.index = 0;
     cellModel1.msg = @"Max.";
-    cellModel1.value = self.dataModel.maxThreshold;
     [self.section4List addObject:cellModel1];
     
     MKCTTempMonitorThresholdCellModel *cellModel2 = [[MKCTTempMonitorThresholdCellModel alloc] init];
     cellModel2.index = 1;
     cellModel2.msg = @"Min.";
-    cellModel2.value = self.dataModel.minThreshold;
     [self.section4List addObject:cellModel2];
 }
 

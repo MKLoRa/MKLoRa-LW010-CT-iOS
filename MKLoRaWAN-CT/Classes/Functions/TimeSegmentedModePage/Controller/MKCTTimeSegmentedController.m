@@ -1,12 +1,12 @@
 //
-//  MKCTTimingModeController.m
+//  MKCTTimeSegmentedController.m
 //  MKLoRaWAN-CT_Example
 //
-//  Created by aa on 2021/5/24.
-//  Copyright © 2021 aadyx2007@163.com. All rights reserved.
+//  Created by aa on 2024/11/21.
+//  Copyright © 2024 lovexiaoxia. All rights reserved.
 //
 
-#import "MKCTTimingModeController.h"
+#import "MKCTTimeSegmentedController.h"
 
 #import "Masonry.h"
 
@@ -19,16 +19,16 @@
 #import "MKTextButtonCell.h"
 #import "MKPickerView.h"
 
-#import "MKCTTimingModeModel.h"
+#import "MKCTTimeSegmentedModel.h"
 
-#import "MKCTReportTimePointCell.h"
-#import "MKCTTimingModeAddCell.h"
+#import "MKCTTimeSegmentedCell.h"
+#import "MKCTTimeSegmentedAddCell.h"
 
-@interface MKCTTimingModeController ()<UITableViewDelegate,
+@interface MKCTTimeSegmentedController ()<UITableViewDelegate,
 UITableViewDataSource,
 MKTextButtonCellDelegate,
-MKCTTimingModeAddCellDelegate,
-MKCTReportTimePointCellDelegate>
+MKCTTimeSegmentedAddCellDelegate,
+MKCTTimeSegmentedCellDelegate>
 
 @property (nonatomic, strong)MKBaseTableView *tableView;
 
@@ -38,14 +38,14 @@ MKCTReportTimePointCellDelegate>
 
 @property (nonatomic, strong)NSMutableArray *section2List;
 
-@property (nonatomic, strong)MKCTTimingModeModel *dataModel;
+@property (nonatomic, strong)MKCTTimeSegmentedModel *dataModel;
 
 @end
 
-@implementation MKCTTimingModeController
+@implementation MKCTTimeSegmentedController
 
 - (void)dealloc {
-    NSLog(@"MKCTTimingModeController销毁");
+    NSLog(@"MKCTTimeSegmentedController销毁");
 }
 
 - (void)viewDidLoad {
@@ -65,9 +65,9 @@ MKCTReportTimePointCellDelegate>
         return 44.f;
     }
     if (indexPath.section == 1) {
-        return 30.f;
+        return 80.f;
     }
-    return 38.f;
+    return 110.f;
 }
 
 #pragma mark - UITableViewDataSource
@@ -94,12 +94,12 @@ MKCTReportTimePointCellDelegate>
     }
     
     if (indexPath.section == 1) {
-        MKCTTimingModeAddCell *cell = [MKCTTimingModeAddCell initCellWithTableView:tableView];
+        MKCTTimeSegmentedAddCell *cell = [MKCTTimeSegmentedAddCell initCellWithTableView:tableView];
         cell.dataModel = self.section1List[indexPath.row];
         cell.delegate = self;
         return cell;
     }
-    MKCTReportTimePointCell *cell = [MKCTReportTimePointCell initCellWithTableView:tableView];
+    MKCTTimeSegmentedCell *cell = [MKCTTimeSegmentedCell initCellWithTableView:tableView];
     cell.dataModel = self.section2List[indexPath.row];
     cell.delegate = self;
     [cell resetFlagForFrame];
@@ -123,58 +123,77 @@ MKCTReportTimePointCellDelegate>
     }
 }
 
-#pragma mark - MKCTTimingModeAddCellDelegate
-- (void)ct_addButtonPressed {
+#pragma mark - MKCTTimeSegmentedAddCellDelegate
+- (void)ct_timeSegmentedAddCell_addPressed {
     if (self.section2List.count >= 10) {
         //最多10组
         [self.view showCentralToast:@"You can set up to 10 time points!"];
         return;
     }
-    MKCTReportTimePointCellModel *cellModel = [[MKCTReportTimePointCellModel alloc] init];
+    MKCTTimeSegmentedCellModel *cellModel = [[MKCTTimeSegmentedCellModel alloc] init];
     cellModel.index = self.section2List.count;
-    cellModel.msg = [NSString stringWithFormat:@"Time Point %ld",(long)(self.section2List.count + 1)];
-    cellModel.hourIndex = 0;
-    cellModel.timeSpaceIndex = 0;
+    cellModel.startHour = 0;
+    cellModel.startMinuteGear = 0;
+    cellModel.endHour = 0;
+    cellModel.endMinuteGear = 0;
+    cellModel.interval = @"600";
     [self.section2List addObject:cellModel];
     
     [self.tableView mk_reloadSection:2 withRowAnimation:UITableViewRowAnimationNone];
 }
 
-#pragma mark - MKCTReportTimePointCellDelegate
+#pragma mark - MKCTTimeSegmentedCellDelegate
 /**
  删除
  
  @param index 所在index
  */
-- (void)ct_cellDeleteButtonPressed:(NSInteger)index {
+- (void)ct_timeSegmentedCell_deleteButtonPressed:(NSInteger)index {
     if (index > self.section2List.count - 1) {
         return;
     }
     [self.section2List removeObjectAtIndex:index];
     
     for (NSInteger i = 0; i < self.section2List.count; i ++) {
-        MKCTReportTimePointCellModel *cellModel = self.section2List[i];
+        MKCTTimeSegmentedCellModel *cellModel = self.section2List[i];
         cellModel.index = i;
-        cellModel.msg = [NSString stringWithFormat:@"Time Point %ld",(long)(i + 1)];
     }
     
     [self.tableView mk_reloadSection:2 withRowAnimation:UITableViewRowAnimationNone];
 }
 
-/// 用户选择了hour事件
-- (void)ct_hourButtonPressed:(NSInteger)index {
+/// Hour按钮选择
+/// - Parameters:
+///   - index: 当前cell所在index
+///   - start: 起始时间还是结束时间
+///   - hour: 当前选择的hour
+- (void)ct_timeSegmentedCell_hourButtonPressed:(NSInteger)index start:(BOOL)start hour:(NSInteger)hour {
     if (![self cellCanSelected]) {
         return;
     }
-    [self showTimePointHourPickView:index];
+    MKCTTimeSegmentedCellModel *cellModel = self.section2List[index];
+    if (start) {
+        cellModel.startHour = hour;
+    }else {
+        cellModel.endHour = hour;
+    }
 }
 
-/// 用户选择了时间间隔事件
-- (void)ct_timeSpaceButtonPressed:(NSInteger)index {
+/// Minute按钮选择
+/// - Parameters:
+///   - index: 当前cell所在index
+///   - start: 起始时间还是结束时间
+///   - hour: 当前选择的minuteGear
+- (void)ct_timeSegmentedCell_minuteGearButtonPressed:(NSInteger)index start:(BOOL)start minuteGear:(NSInteger)minuteGear {
     if (![self cellCanSelected]) {
         return;
     }
-    [self showTimePointTimeSpacePickView:index];
+    MKCTTimeSegmentedCellModel *cellModel = self.section2List[index];
+    if (start) {
+        cellModel.startMinuteGear = minuteGear;
+    }else {
+        cellModel.endMinuteGear = minuteGear;
+    }
 }
 
 /**
@@ -206,10 +225,17 @@ MKCTReportTimePointCellDelegate>
 - (void)saveDataToDevice {
     NSMutableArray *tempList = [NSMutableArray array];
     for (NSInteger i = 0; i < self.section2List.count; i ++) {
-        MKCTReportTimePointCellModel *cellModel = self.section2List[i];
-        MKCTTimingModeTimePointModel *pointModel = [[MKCTTimingModeTimePointModel alloc] init];
-        pointModel.hour = cellModel.hourIndex;
-        pointModel.minuteGear = cellModel.timeSpaceIndex;
+        MKCTTimeSegmentedCellModel *cellModel = self.section2List[i];
+        if (!ValidStr(cellModel.interval)) {
+            [self.view showCentralToast:@"Report Interval cannot be empty!"];
+            return;
+        }
+        MKCTTimeSegmentedTimePeriodModel *pointModel = [[MKCTTimeSegmentedTimePeriodModel alloc] init];
+        pointModel.startHour = cellModel.startHour;
+        pointModel.startMinuteGear = cellModel.startMinuteGear;
+        pointModel.endHour = cellModel.endHour;
+        pointModel.endMinuteGear = cellModel.endMinuteGear;
+        pointModel.interval = [cellModel.interval integerValue];
         [tempList addObject:pointModel];
     }
     [[MKHudManager share] showHUDWithTitle:@"Config..." inView:self.view isPenetration:NO];
@@ -236,8 +262,8 @@ MKCTReportTimePointCellDelegate>
     NSArray *arrCells = [self.tableView visibleCells];
     for (int i = 0; i < [arrCells count]; i++) {
         UITableViewCell *cell = arrCells[i];
-        if ([cell isKindOfClass:MKCTReportTimePointCell.class]) {
-            MKCTReportTimePointCell *tempCell = (MKCTReportTimePointCell *)cell;
+        if ([cell isKindOfClass:MKCTTimeSegmentedCell.class]) {
+            MKCTTimeSegmentedCell *tempCell = (MKCTTimeSegmentedCell *)cell;
             if ([tempCell canReset]) {
                 [tempCell resetCellFrame];
                 canSelected = NO;
@@ -245,43 +271,6 @@ MKCTReportTimePointCellDelegate>
         }
     }
     return canSelected;
-}
-
-- (void)showTimePointHourPickView:(NSInteger)index {
-    MKCTReportTimePointCellModel *cellModel = self.section2List[index];
-    
-    MKPickerView *pickView = [[MKPickerView alloc] init];
-    NSMutableArray *dataList = [NSMutableArray array];
-    for (NSInteger i = 0; i < 24; i ++) {
-        NSString *hour = [NSString stringWithFormat:@"%@",@(i)];
-        if (hour.length == 1) {
-            hour = [@"0" stringByAppendingString:hour];
-        }
-        [dataList addObject:hour];
-    }
-    [pickView showPickViewWithDataList:dataList selectedRow:cellModel.hourIndex block:^(NSInteger currentRow) {
-        cellModel.hourIndex = currentRow;
-        [self.tableView mk_reloadRow:index inSection:2 withRowAnimation:UITableViewRowAnimationNone];
-    }];
-}
-
-- (void)showTimePointTimeSpacePickView:(NSInteger)index {
-    MKCTReportTimePointCellModel *cellModel = self.section2List[index];
-    
-    MKPickerView *pickView = [[MKPickerView alloc] init];
-    NSMutableArray *dataList = [NSMutableArray array];
-    for (NSInteger i = 0; i < 60; i ++) {
-        NSString *minute = [NSString stringWithFormat:@"%@",@(i)];
-        if (minute.length == 1) {
-            minute = [@"0" stringByAppendingString:minute];
-        }
-        [dataList addObject:minute];
-    }
-    
-    [pickView showPickViewWithDataList:dataList selectedRow:cellModel.timeSpaceIndex block:^(NSInteger currentRow) {
-        cellModel.timeSpaceIndex = currentRow;
-        [self.tableView mk_reloadRow:index inSection:2 withRowAnimation:UITableViewRowAnimationNone];
-    }];
 }
 
 #pragma mark - loadSectionDatas
@@ -297,33 +286,35 @@ MKCTReportTimePointCellDelegate>
     MKTextButtonCellModel *cellModel = [[MKTextButtonCellModel alloc] init];
     cellModel.index = 0;
     cellModel.msg = @"Positioning Strategy";
-    cellModel.dataList = @[@"BLE",@"GPS",@"BLE+GPS",@"BLE*GPS"];
+    cellModel.dataList = @[@"BLE",@"GPS",@"BLE+GPS",@"BLE*GPS",@"BLE&GPS"];
     cellModel.dataListIndex = self.dataModel.strategy;
     [self.section0List addObject:cellModel];
 }
 
 - (void)loadSection1Datas {
-    MKCTReportTimePointCellModel * cellModel = [[MKCTReportTimePointCellModel alloc] init];
-    cellModel.msg = @"Reporting Time Point";
+    MKCTTimeSegmentedAddCellModel *cellModel = [[MKCTTimeSegmentedAddCellModel alloc] init];
+    cellModel.msg = @"Time Period Setting";
     [self.section1List addObject:cellModel];
 }
 
 - (void)loadSection2Datas {
     for (NSInteger i = 0; i < self.dataModel.pointList.count; i ++) {
-        MKCTTimingModeTimePointModel *tempModel = self.dataModel.pointList[i];
-        MKCTReportTimePointCellModel *cellModel = [[MKCTReportTimePointCellModel alloc] init];
+        MKCTTimeSegmentedTimePeriodModel *tempModel = self.dataModel.pointList[i];
+        MKCTTimeSegmentedCellModel *cellModel = [[MKCTTimeSegmentedCellModel alloc] init];
         cellModel.index = i;
-        cellModel.msg = [NSString stringWithFormat:@"Time Point %ld",(long)(i + 1)];
-        cellModel.hourIndex = tempModel.hour;
-        cellModel.timeSpaceIndex = tempModel.minuteGear;
+        cellModel.startHour = tempModel.startHour;
+        cellModel.startMinuteGear = tempModel.startMinuteGear;
+        cellModel.endHour = tempModel.endHour;
+        cellModel.endMinuteGear = tempModel.endMinuteGear;
+        cellModel.interval = [NSString stringWithFormat:@"%@",@(tempModel.interval)];
         [self.section2List addObject:cellModel];
     }
 }
 
 #pragma mark - UI
 - (void)loadSubViews {
-    self.defaultTitle = @"Timing Mode";
-    [self.rightButton setImage:LOADICON(@"MKLoRaWAN-CT", @"MKCTTimingModeController", @"ct_slotSaveIcon.png") forState:UIControlStateNormal];
+    self.defaultTitle = @"Time-Segmented Mode";
+    [self.rightButton setImage:LOADICON(@"MKLoRaWAN-CT", @"MKCTTimeSegmentedController", @"ct_slotSaveIcon.png") forState:UIControlStateNormal];
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
@@ -337,7 +328,7 @@ MKCTReportTimePointCellDelegate>
 - (MKBaseTableView *)tableView {
     if (!_tableView) {
         _tableView = [[MKBaseTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableView.backgroundColor = RGBCOLOR(242, 242, 242);
+        _tableView.backgroundColor = COLOR_WHITE_MACROS;
         _tableView.delegate = self;
         _tableView.dataSource = self;
     }
@@ -365,9 +356,9 @@ MKCTReportTimePointCellDelegate>
     return _section2List;
 }
 
-- (MKCTTimingModeModel *)dataModel {
+- (MKCTTimeSegmentedModel *)dataModel {
     if (!_dataModel) {
-        _dataModel = [[MKCTTimingModeModel alloc] init];
+        _dataModel = [[MKCTTimeSegmentedModel alloc] init];
     }
     return _dataModel;
 }

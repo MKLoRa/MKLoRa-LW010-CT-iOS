@@ -228,14 +228,14 @@ mk_textSwitchCellDelegate>
     MKTextButtonCellModel *cellModel1 = [[MKTextButtonCellModel alloc] init];
     cellModel1.index = 0;
     cellModel1.msg = @"Trigger Mode";
-    cellModel1.dataList = @[@"Double Click",@"Triple Click",@"Long Press 1s",@"Long Press 2s",@"Long Press 3s"];
+    cellModel1.dataList = @[@"Single Click",@"Double Click",@"Long Press 1s",@"Long Press 2s",@"Long Press 3s"];
     cellModel1.dataListIndex = self.dataModel.mode;
     [self.section0List addObject:cellModel1];
     
     MKTextButtonCellModel *cellModel2 = [[MKTextButtonCellModel alloc] init];
     cellModel2.index = 1;
     cellModel2.msg = @"Positioning Strategy";
-    cellModel2.dataList = @[@"WIFI",@"BLE",@"GPS",@"WIFI+GPS",@"BLE+GPS",@"WIFI+BLE",@"WIFI+BLE+GPS"];
+    cellModel2.dataList = @[@"BLE",@"GPS",@"BLE+GPS",@"BLE*GPS"];
     cellModel2.dataListIndex = self.dataModel.strategy;
     [self.section0List addObject:cellModel2];
 }

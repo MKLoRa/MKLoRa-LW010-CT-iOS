@@ -48,13 +48,13 @@ NS_ASSUME_NONNULL_BEGIN
                  sucBlock:(void (^)(void))sucBlock
               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure the working mode of the device.
-/// @param deviceMode device mode
+/// Heartbeat Interval.
+/// @param interval 1min~14400mins
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configWorkMode:(mk_ct_deviceMode)deviceMode
-                 sucBlock:(void (^)(void))sucBlock
-              failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configHeartbeatInterval:(NSInteger)interval
+                          sucBlock:(void (^)(void))sucBlock
+                       failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Indicator Settings.
 /// @param protocol protocol.
@@ -64,13 +64,13 @@ NS_ASSUME_NONNULL_BEGIN
                           sucBlock:(void (^)(void))sucBlock
                        failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Heartbeat Interval.
-/// @param interval 1min~14400mins
+///  Hall Power Off Status.
+/// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configHeartbeatInterval:(NSInteger)interval
-                          sucBlock:(void (^)(void))sucBlock
-                       failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configHallPowerOffStatus:(BOOL)isOn
+                           sucBlock:(void (^)(void))sucBlock
+                        failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Shutdown Payload Status.
 /// @param isOn isOn
@@ -80,13 +80,40 @@ NS_ASSUME_NONNULL_BEGIN
                               sucBlock:(void (^)(void))sucBlock
                            failedBlock:(void (^)(NSError *error))failedBlock;
 
-///  Whether to trigger a heartbeat when the device is low on battery.
-/// @param isOn isOn
+/// Buzzer sound selection.
+/// @param type type
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configLowPowerPayloadStatus:(BOOL)isOn
-                              sucBlock:(void (^)(void))sucBlock
-                           failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configBuzzerSoundType:(mk_ct_buzzerSoundType)type
+                        sucBlock:(void (^)(void))sucBlock
+                     failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure three-axis sensor wake-up conditions.
+/// @param threshold 1 x 16ms ~20 x 16ms
+/// @param duration 1 x 10ms ~ 10 x 10ms
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configThreeAxisWakeupConditions:(NSInteger)threshold
+                                  duration:(NSInteger)duration
+                                  sucBlock:(void (^)(void))sucBlock
+                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure three-axis data motion detection judgment parameters.
+/// @param threshold 10 x 2mg ~ 250 x 2mg
+/// @param duration 1 x 5ms ~ 50 x 5ms
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configThreeAxisMotionParameters:(NSInteger)threshold
+                                  duration:(NSInteger)duration
+                                  sucBlock:(void (^)(void))sucBlock
+                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+#pragma mark ***************************************电池相关参数************************************************
+/// Battery Reset.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_batteryResetWithSucBlock:(void (^)(void))sucBlock
+                        failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// When the power of the device is lower than how much, it is judged as a low power state.
 /// @param prompt prompt
@@ -96,21 +123,13 @@ NS_ASSUME_NONNULL_BEGIN
                        sucBlock:(void (^)(void))sucBlock
                     failedBlock:(void (^)(NSError *error))failedBlock;
 
-///  Hall Power Off Status.
+///  Whether to trigger a heartbeat when the device is low on battery.
 /// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configHallPowerOffStatus:(BOOL)isOn
-                           sucBlock:(void (^)(void))sucBlock
-                        failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Automatically power on after charging.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configAutoPowerOnAfterCharging:(BOOL)isOn
-                                 sucBlock:(void (^)(void))sucBlock
-                              failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configLowPowerPayloadStatus:(BOOL)isOn
+                              sucBlock:(void (^)(void))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Low power information packet reporting interval in low power state.
 /// @param interval 1×30mins ~ 255×30mins.
@@ -120,21 +139,13 @@ NS_ASSUME_NONNULL_BEGIN
                                 sucBlock:(void (^)(void))sucBlock
                              failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// GPS limit upload switch.
+/// Automatically power on after charging.
 /// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configGpsLimitUploadStatus:(BOOL)isOn
-                             sucBlock:(void (^)(void))sucBlock
-                          failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Buzzer sound selection.
-/// @param type type
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configBuzzerSoundType:(mk_ct_buzzerSoundType)type
-                        sucBlock:(void (^)(void))sucBlock
-                     failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configAutoPowerOnAfterCharging:(BOOL)isOn
+                                 sucBlock:(void (^)(void))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
 
 #pragma mark ****************************************蓝牙相关参数************************************************
 
@@ -162,6 +173,22 @@ NS_ASSUME_NONNULL_BEGIN
                          sucBlock:(void (^)(void))sucBlock
                       failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Beacon status.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configBeaconStatus:(BOOL)isOn
+                     sucBlock:(void (^)(void))sucBlock
+                  failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Adv interval of the device.
+/// @param interval 1~100(Unit:100ms)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configAdvInterval:(NSInteger)interval
+                    sucBlock:(void (^)(void))sucBlock
+                 failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Configure the txPower of device.
 /// @param txPower txPower
 /// @param sucBlock Success callback
@@ -178,23 +205,15 @@ NS_ASSUME_NONNULL_BEGIN
                    sucBlock:(void (^)(void))sucBlock
                 failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Adv interval of the device.
-/// @param interval 1~100(Unit:100ms)
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configAdvInterval:(NSInteger)interval
-                    sucBlock:(void (^)(void))sucBlock
-                 failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Beacon status.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configBeaconStatus:(BOOL)isOn 
-                     sucBlock:(void (^)(void))sucBlock
-                  failedBlock:(void (^)(NSError *error))failedBlock;
-
 #pragma mark ****************************************模式相关参数************************************************
+
+/// Configure the working mode of the device.
+/// @param deviceMode device mode
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configWorkMode:(mk_ct_deviceMode)deviceMode
+                 sucBlock:(void (^)(void))sucBlock
+              failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Standby Mode positioning strategy.
 /// @param strategy strategy
@@ -213,7 +232,7 @@ NS_ASSUME_NONNULL_BEGIN
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Periodic Mode reporting interval.
-/// @param interval 1min~14400mins
+/// @param interval 30s~86400s
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)ct_configPeriodicModeReportInterval:(long long)interval
@@ -236,21 +255,21 @@ NS_ASSUME_NONNULL_BEGIN
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure Motion Mode Events.
-/// @param protocol protocol
+/// Notify Event On Start.
+/// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configMotionModeEvents:(id <mk_ct_motionModeEventsProtocol>)protocol
-                         sucBlock:(void (^)(void))sucBlock
-                      failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configMotionModeEventsNotifyEventOnStart:(BOOL)isOn
+                                           sucBlock:(void (^)(void))sucBlock
+                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure Motion Mode Number Of Fix On Start.
-/// @param number 1~10
+/// Fix On Start.
+/// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configMotionModeNumberOfFixOnStart:(NSInteger)number
-                                     sucBlock:(void (^)(void))sucBlock
-                                  failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configMotionModeEventsFixOnStart:(BOOL)isOn
+                                   sucBlock:(void (^)(void))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Motion Mode Pos-Strategy On Start.
 /// @param strategy strategy
@@ -260,13 +279,29 @@ NS_ASSUME_NONNULL_BEGIN
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure Motion Mode Report Interval In Trip.
-/// @param interval 10s~86400s
+/// Configure Motion Mode Number Of Fix On Start.
+/// @param number 1~10
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configMotionModeReportIntervalInTrip:(long long)interval
-                                       sucBlock:(void (^)(void))sucBlock
-                                    failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configMotionModeNumberOfFixOnStart:(NSInteger)number
+                                     sucBlock:(void (^)(void))sucBlock
+                                  failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Notify Event In Trip.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configMotionModeEventsNotifyEventInTrip:(BOOL)isOn
+                                          sucBlock:(void (^)(void))sucBlock
+                                       failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Fix In Trip.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configMotionModeEventsFixInTrip:(BOOL)isOn
+                                  sucBlock:(void (^)(void))sucBlock
+                               failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Motion Mode Pos-Strategy In Trip.
 /// @param strategy strategy
@@ -276,19 +311,35 @@ NS_ASSUME_NONNULL_BEGIN
                                     sucBlock:(void (^)(void))sucBlock
                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure Motion Mode Trip End Timeout.
-/// @param time 3~180(Unit:10s)
+/// Configure Motion Mode Report Interval In Trip.
+/// @param interval 10s~86400s
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configMotionModeTripEndTimeout:(NSInteger)time
++ (void)ct_configMotionModeReportIntervalInTrip:(long long)interval
+                                       sucBlock:(void (^)(void))sucBlock
+                                    failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Notify Event On End.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configMotionModeEventsNotifyEventOnEnd:(BOOL)isOn
+                                         sucBlock:(void (^)(void))sucBlock
+                                      failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Fix On End.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configMotionModeEventsFixOnEnd:(BOOL)isOn
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure Motion Mode Number Of Fix On End.
-/// @param number 1~10
+/// Configure Motion Mode Pos-Strategy On End.
+/// @param strategy strategy
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configMotionModeNumberOfFixOnEnd:(NSInteger)number
++ (void)ct_configMotionModePosStrategyOnEnd:(mk_ct_positioningStrategy)strategy
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
@@ -300,13 +351,29 @@ NS_ASSUME_NONNULL_BEGIN
                                       sucBlock:(void (^)(void))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure Motion Mode Pos-Strategy On End.
-/// @param strategy strategy
+/// Configure Motion Mode Number Of Fix On End.
+/// @param number 1~10
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configMotionModePosStrategyOnEnd:(mk_ct_positioningStrategy)strategy
++ (void)ct_configMotionModeNumberOfFixOnEnd:(NSInteger)number
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure Motion Mode Trip End Timeout.
+/// @param time 3~180(Unit:10s)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configMotionModeTripEndTimeout:(NSInteger)time
+                                 sucBlock:(void (^)(void))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Fix On Stationary State.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configMotionModeEventsFixOnStationaryState:(BOOL)isOn
+                                             sucBlock:(void (^)(void))sucBlock
+                                          failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Pos-Strategy On Stationary.
 /// @param strategy strategy
@@ -323,6 +390,22 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_configReportIntervalOnStationary:(NSInteger)interval
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure Time-Segmented Mode Positioning Strategy.
+/// @param strategy strategy
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configTimeSegmentedModeStrategy:(mk_ct_positioningStrategy)strategy
+                                  sucBlock:(void (^)(void))sucBlock
+                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure Time-Segmented Mode Time Period Setting.
+/// @param dataList up to 10 groups of filters.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configTimeSegmentedModeTimePeriodSetting:(NSArray <mk_ct_timeSegmentedModeTimePeriodSettingProtocol>*)dataList
+                                           sucBlock:(void (^)(void))sucBlock
+                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
 
 #pragma mark ****************************************蓝牙扫描过滤参数************************************************
@@ -519,14 +602,6 @@ NS_ASSUME_NONNULL_BEGIN
                              sucBlock:(void (^)(void))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Switch status of filter by BXP Device Info.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configFilterByBXPDeviceInfoStatus:(BOOL)isOn
-                                    sucBlock:(void (^)(void))sucBlock
-                                 failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// The filter status of the BeaconX Pro-ACC device.
 /// @param isOn isOn
 /// @param sucBlock Success callback
@@ -542,6 +617,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_configBXPTHFilterStatus:(BOOL)isOn
                           sucBlock:(void (^)(void))sucBlock
                        failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Switch status of filter by BXP Device Info.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configFilterByBXPDeviceInfoStatus:(BOOL)isOn
+                                    sucBlock:(void (^)(void))sucBlock
+                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Switch status of filter by BXP Button.
 /// @param isOn isOn
@@ -565,7 +648,7 @@ NS_ASSUME_NONNULL_BEGIN
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Switch status of filter by BXP-TagID.
+/// Switch status of filter by BXP-T&S TagID.
 /// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
@@ -589,13 +672,29 @@ NS_ASSUME_NONNULL_BEGIN
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Filtered list of BXP-TagID.
+/// Filtered list of BXP-T&S TagID.
 /// @param macList You can set up to 10 filters.1-6 Bytes.
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)ct_configFilterBXPTagIDList:(NSArray <NSString *>*)tagIDList
                            sucBlock:(void (^)(void))sucBlock
                         failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Switch status of filter by MK-Tof.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configFilterByTofStatus:(BOOL)isOn
+                          sucBlock:(void (^)(void))sucBlock
+                       failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Filtered list of BXP-Tof.
+/// @param codeList You can set up to 10 filters.1-2 Bytes.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configFilterBXPTofList:(NSArray <NSString *>*)codeList
+                         sucBlock:(void (^)(void))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Switch status of filter by MK-PIR.
 /// @param isOn isOn
@@ -655,54 +754,6 @@ NS_ASSUME_NONNULL_BEGIN
                                  maxValue:(NSInteger)maxValue
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Switch status of filter by MK-Tof.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configFilterByTofStatus:(BOOL)isOn
-                          sucBlock:(void (^)(void))sucBlock
-                       failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Filtered list of BXP-Tof.
-/// @param codeList You can set up to 10 filters.1-2 Bytes.
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configFilterBXPTofList:(NSArray <NSString *>*)codeList
-                         sucBlock:(void (^)(void))sucBlock
-                      failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type precise filtering Tag-ID switch
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configBXPSensorInfoFilterByTagIDStatus:(BOOL)isOn
-                                         sucBlock:(void (^)(void))sucBlock
-                                      failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type precise filtering Tag-ID switch.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configBXPSensorInfoPreciseMatchTagIDStatus:(BOOL)isOn
-                                             sucBlock:(void (^)(void))sucBlock
-                                          failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type reverse filtering Tag-ID switch.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configBXPSensorInfoReverseFilterTagIDStatus:(BOOL)isOn
-                                              sucBlock:(void (^)(void))sucBlock
-                                           failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// BXP-SensorInfo type device Tag-ID filtering rules.
-/// @param macList You can set up to 10 filters.1-6 Bytes.
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configBXPSensorInfoFilterBXPTagIDList:(NSArray <NSString *>*)tagIDList
-                                        sucBlock:(void (^)(void))sucBlock
-                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Switch status of filter by Other.
 /// @param isOn isOn
@@ -794,7 +845,23 @@ NS_ASSUME_NONNULL_BEGIN
                 sucBlock:(void (^)(void))sucBlock
              failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure the CH of LoRaWAN.It is only used for US915,AU915.
+/// The ADR ACK LIMIT Of Lorawan.
+/// @param value 1~255
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configLorawanADRACKLimit:(NSInteger)value
+                           sucBlock:(void (^)(void))sucBlock
+                        failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// The ADR ACK DELAY Of Lorawan.
+/// @param value 1~255
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configLorawanADRACKDelay:(NSInteger)value
+                           sucBlock:(void (^)(void))sucBlock
+                        failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure the CH of LoRaWAN.It is only used for US915,AU915,CN470.
 /// @param chlValue Minimum value of CH.0 ~ 95
 /// @param chhValue Maximum value of CH. chlValue ~ 95
 /// @param sucBlock Success callback
@@ -804,7 +871,7 @@ NS_ASSUME_NONNULL_BEGIN
             sucBlock:(void (^)(void))sucBlock
          failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure the DR of LoRaWAN.It is only used forEU868,KR920, IN865, RU864.
+/// Configure the DR of LoRaWAN.It is only used for CN470, CN779, EU433, EU868,KR920, IN865, RU864.
 /// @param drValue 0~5
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
@@ -826,7 +893,7 @@ NS_ASSUME_NONNULL_BEGIN
                        sucBlock:(void (^)(void))sucBlock
                     failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// It is only used for EU868 and RU864. Off: The uplink report interval will not be limit by region freqency. On:The uplink report interval will be limit by region freqency.
+/// It is only used for EU868,CN779, EU433 and RU864. Off: The uplink report interval will not be limit by region freqency. On:The uplink report interval will be limit by region freqency.
 /// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
@@ -850,21 +917,15 @@ NS_ASSUME_NONNULL_BEGIN
                                     sucBlock:(void (^)(void))sucBlock
                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// The ADR ACK LIMIT Of Lorawan.
-/// @param value 1~255
+/// Device Information Payload Type.
+/// @param type type
+/// @param times Max Retransmission Times.(1~4)
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configLorawanADRACKLimit:(NSInteger)value
-                           sucBlock:(void (^)(void))sucBlock
-                        failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// The ADR ACK DELAY Of Lorawan.
-/// @param value 1~255
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configLorawanADRACKDelay:(NSInteger)value
-                           sucBlock:(void (^)(void))sucBlock
-                        failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configDeviceInfoPayloadWithMessageType:(mk_ct_loraWanMessageType)type
+                              retransmissionTimes:(NSInteger)times
+                                         sucBlock:(void (^)(void))sucBlock
+                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Heartbeat Payload Type.
 /// @param type type
@@ -876,16 +937,6 @@ NS_ASSUME_NONNULL_BEGIN
                                         sucBlock:(void (^)(void))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Positioning Payload Type.
-/// @param type type
-/// @param times Max Retransmission Times.(1~4)
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configPositioningPayloadWithMessageType:(mk_ct_loraWanMessageType)type
-                               retransmissionTimes:(NSInteger)times
-                                          sucBlock:(void (^)(void))sucBlock
-                                       failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Low-Power Payload Type.
 /// @param type type
 /// @param times Max Retransmission Times.(1~4)
@@ -895,16 +946,6 @@ NS_ASSUME_NONNULL_BEGIN
                             retransmissionTimes:(NSInteger)times
                                        sucBlock:(void (^)(void))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Shock Payload Type.
-/// @param type type
-/// @param times Max Retransmission Times.(1~4)
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configShockPayloadWithMessageType:(mk_ct_loraWanMessageType)type
-                         retransmissionTimes:(NSInteger)times
-                                    sucBlock:(void (^)(void))sucBlock
-                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Event Payload Type.
 /// @param type type
@@ -916,6 +957,36 @@ NS_ASSUME_NONNULL_BEGIN
                                     sucBlock:(void (^)(void))sucBlock
                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Positioning Payload Type.
+/// @param type type
+/// @param times Max Retransmission Times.(1~4)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configPositioningPayloadWithMessageType:(mk_ct_loraWanMessageType)type
+                               retransmissionTimes:(NSInteger)times
+                                          sucBlock:(void (^)(void))sucBlock
+                                       failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Shock Payload Type.
+/// @param type type
+/// @param times Max Retransmission Times.(1~4)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configShockPayloadWithMessageType:(mk_ct_loraWanMessageType)type
+                         retransmissionTimes:(NSInteger)times
+                                    sucBlock:(void (^)(void))sucBlock
+                                 failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Man Down Detection Payload Type.
+/// @param type type
+/// @param times Max Retransmission Times.(1~4)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configManDownDetectionPayloadWithMessageType:(mk_ct_loraWanMessageType)type
+                                    retransmissionTimes:(NSInteger)times
+                                               sucBlock:(void (^)(void))sucBlock
+                                            failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// GPS Limit Payload Type.
 /// @param type type
 /// @param times Max Retransmission Times.(1~4)
@@ -926,16 +997,6 @@ NS_ASSUME_NONNULL_BEGIN
                                        sucBlock:(void (^)(void))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Device Information Payload Type.
-/// @param type type
-/// @param times Max Retransmission Times.(1~4)
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configDeviceInfoPayloadWithMessageType:(mk_ct_loraWanMessageType)type
-                              retransmissionTimes:(NSInteger)times
-                                         sucBlock:(void (^)(void))sucBlock
-                                      failedBlock:(void (^)(NSError *error))failedBlock;
-
 #pragma mark ****************************************辅助功能************************************************
 
 /// Configure the Positioning Strategy Downlink  For Position.
@@ -945,26 +1006,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)ct_configDownlinkPositioningStrategy:(mk_ct_positioningStrategy)strategy
                                     sucBlock:(void (^)(void))sucBlock
                                  failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Configure three-axis sensor wake-up conditions.
-/// @param threshold 1 x 16ms ~20 x 16ms
-/// @param duration 1 x 10ms ~ 10 x 10ms
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configThreeAxisWakeupConditions:(NSInteger)threshold
-                                  duration:(NSInteger)duration
-                                  sucBlock:(void (^)(void))sucBlock
-                               failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Configure three-axis data motion detection judgment parameters.
-/// @param threshold 10 x 2mg ~ 250 x 2mg
-/// @param duration 1 x 5ms ~ 50 x 5ms
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configThreeAxisMotionParameters:(NSInteger)threshold
-                                  duration:(NSInteger)duration
-                                  sucBlock:(void (^)(void))sucBlock
-                               failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure the state of the Shock detection switch.
 /// @param isOn isOn
@@ -998,42 +1039,59 @@ NS_ASSUME_NONNULL_BEGIN
                      sucBlock:(void (^)(void))sucBlock
                   failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure  Man Down Detection.
-/// @param isOn isOn
-/// @param notifyEventOnManDownStart Notify Event On Man Down Start
-/// @param notifyEventOnManDownEnd Notify Event On Man Down End
+/// Lighting Monitor Notify Status.
+/// @param isOn Lighting Monitor Status.
+/// @param alarmSwicth Alarm Swicth Status.
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configManDownDetectionStatus:(BOOL)isOn
-              notifyEventOnManDownStart:(BOOL)notifyEventOnManDownStart
-                notifyEventOnManDownEnd:(BOOL)notifyEventOnManDownEnd
-                               sucBlock:(void (^)(void))sucBlock
-                            failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configLightMonitorNotifyStatus:(BOOL)isOn
+                              alarmSwicth:(BOOL)alarmSwicth
+                                 sucBlock:(void (^)(void))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure ManDown Detection Timeout.
-/// @param timeout 1Min~120Mins
+/// Lighting data simple rate interval.
+/// @param interval 1s~3600s.
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configManDownDetectionTimeout:(NSInteger)timeout
-                                sucBlock:(void (^)(void))sucBlock
-                             failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configLightDataSampleRateInterval:(NSInteger)interval
+                                    sucBlock:(void (^)(void))sucBlock
+                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure the Positioning Strategy for ManDown Detection.
-/// @param strategy strategy
+/// Lighting Threshold.
+/// @param threshold 10Lux~200Lux.
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configManDownPositioningStrategy:(mk_ct_positioningStrategy)strategy
-                                   sucBlock:(void (^)(void))sucBlock
-                                failedBlock:(void (^)(NSError *error))failedBlock;
++ (void)ct_configLightThreshold:(NSInteger)threshold
+                       sucBlock:(void (^)(void))sucBlock
+                    failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Configure ManDown Detection Report Interval.
-/// @param interval 10s~600s
+/// Temperature Monitor Notify Status.
+/// @param isOn Lighting Monitor Status.
+/// @param alarmSwicth Alarm Swicth Status.
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configManDownDetectionReportInterval:(NSInteger)interval
++ (void)ct_configTemperatureMonitorNotifyStatus:(BOOL)isOn
+                                    alarmSwicth:(BOOL)alarmSwicth
                                        sucBlock:(void (^)(void))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Temperature data simple rate interval.
+/// @param interval 1s~3600s.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configTemperatureDataSampleRateInterval:(NSInteger)interval
+                                          sucBlock:(void (^)(void))sucBlock
+                                       failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Temperature Threshold.
+/// @param max -20℃~60℃.
+/// @param min -20℃~60℃.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configTemperatureThreshold:(NSInteger)max
+                                  min:(NSInteger)min
+                             sucBlock:(void (^)(void))sucBlock
+                          failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Type of Alarm Function.
 /// @param type type
@@ -1111,62 +1169,69 @@ NS_ASSUME_NONNULL_BEGIN
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Temperature Monitor Notify Status.
-/// @param isOn Lighting Monitor Status.
-/// @param alarmSwicth Alarm Swicth Status.
+/// Configure  Man Down Detection.
+/// @param isOn isOn
+/// @param notifyEventOnManDownStart Notify Event On Man Down Start
+/// @param notifyEventOnManDownEnd Notify Event On Man Down End
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configTemperatureMonitorNotifyStatus:(BOOL)isOn
-                                    alarmSwicth:(BOOL)alarmSwicth
++ (void)ct_configManDownDetectionStatus:(BOOL)isOn
+              notifyEventOnManDownStart:(BOOL)notifyEventOnManDownStart
+                notifyEventOnManDownEnd:(BOOL)notifyEventOnManDownEnd
+                               sucBlock:(void (^)(void))sucBlock
+                            failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure ManDown Detection Timeout.
+/// @param timeout 1Min~120Mins
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configManDownDetectionTimeout:(NSInteger)timeout
+                                sucBlock:(void (^)(void))sucBlock
+                             failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure the Positioning Strategy for ManDown Detection.
+/// @param strategy strategy
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configManDownPositioningStrategy:(mk_ct_positioningStrategy)strategy
+                                   sucBlock:(void (^)(void))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure ManDown Detection Report Interval.
+/// @param interval 10s~600s
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configManDownDetectionReportInterval:(NSInteger)interval
                                        sucBlock:(void (^)(void))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Temperature data simple rate interval.
-/// @param interval 1s~3600s.
+#pragma mark ****************************************定位参数************************************************
+/// GPS limit upload switch.
+/// @param isOn isOn
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)ct_configTemperatureDataSampleRateInterval:(NSInteger)interval
-                                          sucBlock:(void (^)(void))sucBlock
-                                       failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Temperature Threshold.
-/// @param max -20℃~60℃.
-/// @param min -20℃~60℃.
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configTemperatureThreshold:(NSInteger)max
-                                  min:(NSInteger)min
++ (void)ct_configGpsLimitUploadStatus:(BOOL)isOn
                              sucBlock:(void (^)(void))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Lighting Monitor Notify Status.
-/// @param isOn Lighting Monitor Status.
-/// @param alarmSwicth Alarm Swicth Status.
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configLightMonitorNotifyStatus:(BOOL)isOn
-                              alarmSwicth:(BOOL)alarmSwicth
+/// Outdoor BLE Report Interval.
+/// - Parameters:
+///   - interval: 1min~100min.
+///   - sucBlock: Success callback
+///   - failedBlock: Failure callback
++ (void)ct_configOutdoorBLEReportInterval:(NSInteger)interval
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Lighting data simple rate interval.
-/// @param interval 1s~3600s.
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configLightDataSampleRateInterval:(NSInteger)interval
-                                    sucBlock:(void (^)(void))sucBlock
-                                 failedBlock:(void (^)(NSError *error))failedBlock;
+/// Outdoor GPS Report Interval.
+/// - Parameters:
+///   - interval: 1min~14400min.
+///   - sucBlock: Success callback
+///   - failedBlock: Failure callback
++ (void)ct_configOutdoorGPSReportInterval:(NSInteger)interval
+                                 sucBlock:(void (^)(void))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Lighting Threshold.
-/// @param threshold 10Lux~200Lux.
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)ct_configLightThreshold:(NSInteger)threshold
-                       sucBlock:(void (^)(void))sucBlock
-                    failedBlock:(void (^)(NSError *error))failedBlock;
-
-
-#pragma mark ****************************************蓝牙定位参数************************************************
 /// Bluetooth Fix Mechanism.
 /// @param priority priority
 /// @param sucBlock Success callback
@@ -1191,9 +1256,15 @@ NS_ASSUME_NONNULL_BEGIN
                                   sucBlock:(void (^)(void))sucBlock
                                failedBlock:(void (^)(NSError *error))failedBlock;
 
-#pragma mark ****************************************GPS定位参数************************************************
+/// Beacon Voltage Report in Bluetooth Fix.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)ct_configBeaconVoltageReportInBleFixStatus:(BOOL)isOn
+                                          sucBlock:(void (^)(void))sucBlock
+                                       failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// GPS Fix Positioning Timeout.
+/// L76K GPS Fix Positioning Timeout.
 /// - Parameters:
 ///   - timeout: 30s~600s.
 ///   - sucBlock: Success callback
@@ -1202,32 +1273,14 @@ NS_ASSUME_NONNULL_BEGIN
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// GPS Fix PDOP.
+/// L76K GPS Fix PDOP.
 /// - Parameters:
 ///   - pdop: 25~100
 ///   - sucBlock: Success callback
 ///   - failedBlock: Failure callback
-+ (void)ct_configGPSFixPDOP:(NSInteger)pdop 
++ (void)ct_configGPSFixPDOP:(NSInteger)pdop
                    sucBlock:(void (^)(void))sucBlock
                 failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Outdoor BLE Report Interval.
-/// - Parameters:
-///   - interval: 1min~100min.
-///   - sucBlock: Success callback
-///   - failedBlock: Failure callback
-+ (void)ct_configOutdoorBLEReportInterval:(NSInteger)interval
-                                 sucBlock:(void (^)(void))sucBlock
-                              failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Outdoor GPS Report Interval.
-/// - Parameters:
-///   - interval: 1min~14400min.
-///   - sucBlock: Success callback
-///   - failedBlock: Failure callback
-+ (void)ct_configOutdoorGPSReportInterval:(NSInteger)interval
-                                 sucBlock:(void (^)(void))sucBlock
-                              failedBlock:(void (^)(NSError *error))failedBlock;
 
 
 @end

@@ -25,7 +25,7 @@ MKTextFieldCellDelegate>
 
 @property (nonatomic, strong)MKBaseTableView *tableView;
 
-@property (nonatomic, strong)NSMutableArray *section0List;
+@property (nonatomic, strong)NSMutableArray *dataList;
 
 @property (nonatomic, strong)MKCTAxisSettingDataModel *dataModel;
 
@@ -59,12 +59,12 @@ MKTextFieldCellDelegate>
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.section0List.count;
+    return self.dataList.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MKTextFieldCell *cell = [MKTextFieldCell initCellWithTableView:tableView];
-    cell.dataModel = self.section0List[indexPath.row];
+    cell.dataModel = self.dataList[indexPath.row];
     cell.delegate = self;
     return cell;
 }
@@ -74,7 +74,7 @@ MKTextFieldCellDelegate>
 /// @param index 当前cell所在的index
 /// @param value 当前textField的值
 - (void)mk_deviceTextCellValueChanged:(NSInteger)index textValue:(NSString *)value {
-    MKTextFieldCellModel *cellModel = self.section0List[index];
+    MKTextFieldCellModel *cellModel = self.dataList[index];
     cellModel.textFieldValue = value;
     if (index == 0) {
         //Wakeup Threshold
@@ -94,11 +94,6 @@ MKTextFieldCellDelegate>
     if (index == 3) {
         //Motion  Duration
         self.dataModel.motionDuration = value;
-        return;
-    }
-    if (index == 4) {
-        //Vibration  Thresholds
-        self.dataModel.vibrationThresholds = value;
         return;
     }
 }
@@ -148,7 +143,7 @@ MKTextFieldCellDelegate>
     cellModel1.maxLength = 2;
     cellModel1.unit = @"x16mg";
     cellModel1.textFieldValue = self.dataModel.wakeupThreshold;
-    [self.section0List addObject:cellModel1];
+    [self.dataList addObject:cellModel1];
     
     MKTextFieldCellModel *cellModel2 = [[MKTextFieldCellModel alloc] init];
     cellModel2.index = 1;
@@ -158,7 +153,7 @@ MKTextFieldCellDelegate>
     cellModel2.maxLength = 2;
     cellModel2.unit = @"x10ms";
     cellModel2.textFieldValue = self.dataModel.wakeupDuration;
-    [self.section0List addObject:cellModel2];
+    [self.dataList addObject:cellModel2];
     
     MKTextFieldCellModel *cellModel3 = [[MKTextFieldCellModel alloc] init];
     cellModel3.index = 2;
@@ -168,7 +163,7 @@ MKTextFieldCellDelegate>
     cellModel3.maxLength = 3;
     cellModel3.unit = @"x2mg";
     cellModel3.textFieldValue = self.dataModel.motionThreshold;
-    [self.section0List addObject:cellModel3];
+    [self.dataList addObject:cellModel3];
     
     MKTextFieldCellModel *cellModel4 = [[MKTextFieldCellModel alloc] init];
     cellModel4.index = 3;
@@ -178,17 +173,7 @@ MKTextFieldCellDelegate>
     cellModel4.maxLength = 2;
     cellModel4.unit = @"x5ms";
     cellModel4.textFieldValue = self.dataModel.motionDuration;
-    [self.section0List addObject:cellModel4];
-    
-    MKTextFieldCellModel *cellModel5 = [[MKTextFieldCellModel alloc] init];
-    cellModel5.index = 4;
-    cellModel5.msg = @"Shock Thresholds";
-    cellModel5.textPlaceholder = @"10~255";
-    cellModel5.textFieldType = mk_realNumberOnly;
-    cellModel5.maxLength = 3;
-    cellModel5.unit = @"x10mg";
-    cellModel5.textFieldValue = self.dataModel.vibrationThresholds;
-    [self.section0List addObject:cellModel5];
+    [self.dataList addObject:cellModel4];
     
     [self.tableView reloadData];
 }
@@ -217,11 +202,11 @@ MKTextFieldCellDelegate>
     return _tableView;
 }
 
-- (NSMutableArray *)section0List {
-    if (!_section0List) {
-        _section0List = [NSMutableArray array];
+- (NSMutableArray *)dataList {
+    if (!_dataList) {
+        _dataList = [NSMutableArray array];
     }
-    return _section0List;
+    return _dataList;
 }
 
 - (MKCTAxisSettingDataModel *)dataModel {
