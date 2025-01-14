@@ -626,7 +626,7 @@
     if (!ValidStr(self.reportIntervalInTrip) || [self.reportIntervalInTrip integerValue] < 10 || [self.reportIntervalInTrip integerValue] > 86400) {
         return NO;
     }
-    if (!ValidStr(self.tripEndTimeout) || [self.tripEndTimeout integerValue] < 3 || [self.tripEndTimeout integerValue] > 180) {
+    if (!ValidStr(self.tripEndTimeout) || [self.tripEndTimeout integerValue] < 1 || [self.tripEndTimeout integerValue] > 180) {
         return NO;
     }
     if (!ValidStr(self.numberOfFixOnEnd) || [self.numberOfFixOnEnd integerValue] < 1 || [self.numberOfFixOnEnd integerValue] > 10) {

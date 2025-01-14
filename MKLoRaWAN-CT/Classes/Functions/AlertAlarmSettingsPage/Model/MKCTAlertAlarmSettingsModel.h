@@ -16,13 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign)NSInteger mode;
 
 /*
- 0:WIFI
- 1:BLE
- 2:GPS
- 3:WIFI+GPS
- 4:BLE+GPS
- 5:WIFI+BLE
- 6:WIFI+BLE+GPS
+ 0:BLE
+ 1:GPS
+ 2:BLE+GPS
+ 3:BLE*GPS
  */
 @property (nonatomic, assign)NSInteger strategy;
 

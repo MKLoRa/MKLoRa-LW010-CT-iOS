@@ -14,6 +14,7 @@
 #import "MKBaseTableView.h"
 #import "UIView+MKAdd.h"
 #import "UITableView+MKAdd.h"
+#import "NSObject+MKModel.h"
 
 #import "MKHudManager.h"
 #import "MKAlertController.h"
@@ -23,6 +24,7 @@
 
 #import "MKCTSelftestCell.h"
 #import "MKCTPCBAStatusCell.h"
+#import "MKCTBatteryInfoCell.h"
 
 @interface MKCTSelftestController ()<UITableViewDelegate,
 UITableViewDataSource>
@@ -32,6 +34,8 @@ UITableViewDataSource>
 @property (nonatomic, strong)NSMutableArray *section0List;
 
 @property (nonatomic, strong)NSMutableArray *section1List;
+
+@property (nonatomic, strong)NSMutableArray *section2List;
 
 @property (nonatomic, strong)NSMutableArray *headerList;
 
@@ -55,6 +59,9 @@ UITableViewDataSource>
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         return 60.f;
+    }
+    if (indexPath.section == 2) {
+        return 290.f;
     }
     
     return 44.f;
@@ -82,6 +89,9 @@ UITableViewDataSource>
     if (section == 1) {
         return self.section1List.count;
     }
+    if (section == 2) {
+        return self.section2List.count;
+    }
     
     return 0;
 }
@@ -92,8 +102,13 @@ UITableViewDataSource>
         cell.dataModel = self.section0List[indexPath.row];
         return cell;
     }
-    MKCTPCBAStatusCell *cell = [MKCTPCBAStatusCell initCellWithTableView:tableView];
-    cell.dataModel = self.section1List[indexPath.row];
+    if (indexPath.section == 1) {
+        MKCTPCBAStatusCell *cell = [MKCTPCBAStatusCell initCellWithTableView:tableView];
+        cell.dataModel = self.section1List[indexPath.row];
+        return cell;
+    }
+    MKCTBatteryInfoCell *cell = [MKCTBatteryInfoCell initCellWithTableView:tableView];
+    cell.dataModel = self.section2List[indexPath.row];
     return cell;
 }
 
@@ -116,8 +131,9 @@ UITableViewDataSource>
 - (void)loadSectionDatas {
     [self loadSection0Datas];
     [self loadSection1Datas];
+    [self loadSection2Datas];
     
-    for (NSInteger i = 0; i < 2; i ++) {
+    for (NSInteger i = 0; i < 3; i ++) {
         MKTableSectionLineHeaderModel *headerModel = [[MKTableSectionLineHeaderModel alloc] init];
         [self.headerList addObject:headerModel];
     }
@@ -127,12 +143,11 @@ UITableViewDataSource>
 
 - (void)loadSection0Datas {
     MKCTSelftestCellModel *cellModel = [[MKCTSelftestCellModel alloc] init];
-    if ([self.dataModel.gps integerValue] == 0 && [self.dataModel.acceData integerValue] == 0 && [self.dataModel.flash integerValue] == 0) {
+    if ([self.dataModel.gps integerValue] == 0 && [self.dataModel.acceData integerValue] == 0) {
         cellModel.value0 = @"0";
     }
-    cellModel.value1 = ([self.dataModel.flash integerValue] == 1 ? @"1" : @"");
-    cellModel.value2 = ([self.dataModel.acceData integerValue] == 1 ? @"2" : @"");
-    cellModel.value3 = ([self.dataModel.gps integerValue] == 1 ? @"3" : @"");
+    cellModel.value1 = ([self.dataModel.acceData integerValue] == 1 ? @"1" : @"");
+    cellModel.value2 = ([self.dataModel.gps integerValue] == 1 ? @"2" : @"");
     
     [self.section0List addObject:cellModel];
 }
@@ -143,6 +158,14 @@ UITableViewDataSource>
     cellModel.value1 = (([self.dataModel.pcbaStatus integerValue] == 1) ? @"1" : @"");
     cellModel.value2 = (([self.dataModel.pcbaStatus integerValue] == 2) ? @"2" : @"");
     [self.section1List addObject:cellModel];
+}
+
+- (void)loadSection2Datas {
+    MKCTBatteryInfoCellModel *cellModel = [[MKCTBatteryInfoCellModel alloc] init];
+    cellModel.msg = @"All Cycles Battery Information:";
+    [cellModel mk_modelSetWithJSON:self.dataModel.allInfo];
+    
+    [self.section2List addObject:cellModel];
 }
 
 #pragma mark - UI
@@ -179,6 +202,13 @@ UITableViewDataSource>
         _section1List = [NSMutableArray array];
     }
     return _section1List;
+}
+
+- (NSMutableArray *)section2List {
+    if (!_section2List) {
+        _section2List = [NSMutableArray array];
+    }
+    return _section2List;
 }
 
 - (NSMutableArray *)headerList {

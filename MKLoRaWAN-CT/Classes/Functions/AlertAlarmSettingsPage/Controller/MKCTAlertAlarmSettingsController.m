@@ -199,7 +199,7 @@ mk_textSwitchCellDelegate>
     MKTextButtonCellModel *cellModel2 = [[MKTextButtonCellModel alloc] init];
     cellModel2.index = 1;
     cellModel2.msg = @"Positioning Strategy";
-    cellModel2.dataList = @[@"WIFI",@"BLE",@"GPS",@"WIFI+GPS",@"BLE+GPS",@"WIFI+BLE",@"WIFI+BLE+GPS"];
+    cellModel2.dataList = @[@"BLE",@"GPS",@"BLE+GPS",@"BLE*GPS"];
     cellModel2.dataListIndex = self.dataModel.strategy;
     [self.section0List addObject:cellModel2];
 }

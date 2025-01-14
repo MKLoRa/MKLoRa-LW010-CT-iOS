@@ -249,6 +249,8 @@ NSString *const mk_ct_contentKey = @"mk_ct_contentKey";
         NSString *loraSendCount = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(40, 8)];
         NSString *loraPowerConsumption = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(48, 8)];
         NSString *batteryPower = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(56, 8)];
+        NSString *staticPositionCount = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(64, 8)];
+        NSString *movePositionCount = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(72, 8)];
         
         resultDic = @{
             @"workTimes":workTimes,
@@ -258,7 +260,9 @@ NSString *const mk_ct_contentKey = @"mk_ct_contentKey";
             @"gpsPostionTimes":gpsPostionTimes,
             @"loraSendCount":loraSendCount,
             @"loraPowerConsumption":loraPowerConsumption,
-            @"batteryPower":batteryPower
+            @"batteryPower":batteryPower,
+            @"staticPositionCount":staticPositionCount,
+            @"movePositionCount":movePositionCount
         };
         operationID = mk_ct_taskReadAllCycleBatteryInformationOperation;
     }else if ([cmd isEqualToString:@"0104"]) {
@@ -731,6 +735,7 @@ NSString *const mk_ct_contentKey = @"mk_ct_contentKey";
         operationID = mk_ct_taskReadBXPButtonFilterStatusOperation;
     }else if ([cmd isEqualToString:@"0469"]) {
         //读取BXP-Button报警过滤开关
+        
         BOOL singlePresse = ([[content substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"01"]);
         BOOL doublePresse = ([[content substringWithRange:NSMakeRange(2, 2)] isEqualToString:@"01"]);
         BOOL longPresse = ([[content substringWithRange:NSMakeRange(4, 2)] isEqualToString:@"01"]);

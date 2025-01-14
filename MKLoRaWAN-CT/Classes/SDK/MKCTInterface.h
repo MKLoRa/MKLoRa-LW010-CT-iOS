@@ -214,6 +214,8 @@ NS_ASSUME_NONNULL_BEGIN
      @"loraPowerConsumption":@"50000",      //Power consumption of LoRaWAN sending and receiving data.(Unit:mAS)
      @"loraSendCount":@"10000",     //Number of LoRaWAN transmissions.
      @"batteryPower":@"33500"       //Total battery power consumption.(Unit:0.001mAH)
+     @"staticPositionCount":@"100", //Number of static positioning reports of the device in motion mode
+     @"movePositionCount":@"100",   //Number of movement positioning reports of the device in motion mode
  };
  */
 /// @param sucBlock Success callback

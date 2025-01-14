@@ -232,9 +232,19 @@ MKCTTimeSegmentedCellDelegate>
         }
         MKCTTimeSegmentedTimePeriodModel *pointModel = [[MKCTTimeSegmentedTimePeriodModel alloc] init];
         pointModel.startHour = cellModel.startHour;
-        pointModel.startMinuteGear = cellModel.startMinuteGear;
+        if (cellModel.startHour == 24) {
+            pointModel.startMinuteGear = 0;
+        }else {
+            pointModel.startMinuteGear = cellModel.startMinuteGear;
+        }
+        
         pointModel.endHour = cellModel.endHour;
-        pointModel.endMinuteGear = cellModel.endMinuteGear;
+        if (cellModel.endHour == 24) {
+            pointModel.endMinuteGear = 0;
+        }else {
+            pointModel.endMinuteGear = cellModel.endMinuteGear;
+        }
+        
         pointModel.interval = [cellModel.interval integerValue];
         [tempList addObject:pointModel];
     }

@@ -102,6 +102,7 @@
 #import "MKCTScanPageCell.h"
 #import "MKCTSelftestController.h"
 #import "MKCTSelftestModel.h"
+#import "MKCTBatteryInfoCell.h"
 #import "MKCTPCBAStatusCell.h"
 #import "MKCTSelftestCell.h"
 #import "MKCTSosAlarmSettingsController.h"

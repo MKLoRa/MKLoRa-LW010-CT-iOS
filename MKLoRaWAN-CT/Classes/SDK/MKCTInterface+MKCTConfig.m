@@ -368,12 +368,12 @@ static NSInteger const maxDataLen = 100;
 + (void)ct_configPeriodicModeReportInterval:(long long)interval
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock {
-    if (interval < 30 || interval > 86400) {
+    if (interval < 1 || interval > 14400) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *value = [MKBLEBaseSDKAdopter fetchHexValue:interval byteLen:4];
-    NSString *commandString = [@"ed01032104" stringByAppendingString:value];
+    NSString *value = [MKBLEBaseSDKAdopter fetchHexValue:interval byteLen:2];
+    NSString *commandString = [@"ed01032102" stringByAppendingString:value];
     [self configDataWithTaskID:mk_ct_taskConfigPeriodicModeReportIntervalOperation
                           data:commandString
                       sucBlock:sucBlock
@@ -562,7 +562,7 @@ static NSInteger const maxDataLen = 100;
 + (void)ct_configMotionModeTripEndTimeout:(NSInteger)time
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock {
-    if (time < 3 || time > 180) {
+    if (time < 1 || time > 180) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }

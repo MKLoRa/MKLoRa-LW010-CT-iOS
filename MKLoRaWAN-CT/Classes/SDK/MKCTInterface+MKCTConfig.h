@@ -232,7 +232,7 @@ NS_ASSUME_NONNULL_BEGIN
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Periodic Mode reporting interval.
-/// @param interval 30s~86400s
+/// @param interval 1min~14400mins
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)ct_configPeriodicModeReportInterval:(long long)interval
@@ -360,7 +360,7 @@ NS_ASSUME_NONNULL_BEGIN
                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Motion Mode Trip End Timeout.
-/// @param time 3~180(Unit:10s)
+/// @param time 1~180(Unit:10s)
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)ct_configMotionModeTripEndTimeout:(NSInteger)time

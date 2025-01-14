@@ -501,7 +501,7 @@ static dispatch_once_t onceToken;
     index += 4;
     
     NSString *binary = [MKBLEBaseSDKAdopter binaryByhex:[content substringWithRange:NSMakeRange(index, 2)]];
-    BOOL needPassword = [[binary substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"0"];
+    BOOL needPassword = [[binary substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"1"];
     NSString *tempWorkBynary = [@"0" stringByAppendingString:[binary substringFromIndex:1]];
     NSString *tempWork = [MKBLEBaseSDKAdopter getHexByBinary:tempWorkBynary];
     NSString *workMode = [MKBLEBaseSDKAdopter getDecimalStringWithHex:tempWork range:NSMakeRange(0, tempWork.length)];

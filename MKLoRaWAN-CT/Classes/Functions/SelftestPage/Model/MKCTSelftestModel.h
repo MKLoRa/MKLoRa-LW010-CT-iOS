@@ -16,9 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy)NSString *acceData;
 
-@property (nonatomic, copy)NSString *flash;
-
 @property (nonatomic, copy)NSString *pcbaStatus;
+
+@property (nonatomic, strong)NSDictionary *allInfo;
 
 - (void)readDataWithSucBlock:(void (^)(void))sucBlock failedBlock:(void (^)(NSError *error))failedBlock;;
 

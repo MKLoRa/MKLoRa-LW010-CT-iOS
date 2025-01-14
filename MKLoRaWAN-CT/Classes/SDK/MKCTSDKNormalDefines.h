@@ -189,13 +189,13 @@ typedef NS_ENUM(NSInteger, mk_ct_delayResponseStatus) {
 
 @protocol mk_ct_timeSegmentedModeTimePeriodSettingProtocol <NSObject>
 
-/// 0~23
+/// 0~24
 @property (nonatomic, assign)NSInteger startHour;
 
 /// 0-59
 @property (nonatomic, assign)NSInteger startMinuteGear;
 
-/// 0~23
+/// 0~24
 @property (nonatomic, assign)NSInteger endHour;
 
 /// 0-59
