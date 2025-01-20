@@ -53,8 +53,8 @@ typedef NS_ENUM(NSInteger, mk_ct_alarmType) {
 };
 
 typedef NS_ENUM(NSInteger, mk_ct_alertAlarmTriggerMode) {
-    mk_ct_alertAlarmTriggerMode_singleClick,
     mk_ct_alertAlarmTriggerMode_doubleClick,
+    mk_ct_alertAlarmTriggerMode_tripleClick,
     mk_ct_alertAlarmTriggerMode_longPressOneSecond,
     mk_ct_alertAlarmTriggerMode_longPressTwoSeconds,
     mk_ct_alertAlarmTriggerMode_longPressThreeSeconds

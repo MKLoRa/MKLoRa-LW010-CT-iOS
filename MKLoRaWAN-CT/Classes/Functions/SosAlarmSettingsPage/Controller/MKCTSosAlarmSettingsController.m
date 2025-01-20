@@ -228,7 +228,7 @@ mk_textSwitchCellDelegate>
     MKTextButtonCellModel *cellModel1 = [[MKTextButtonCellModel alloc] init];
     cellModel1.index = 0;
     cellModel1.msg = @"Trigger Mode";
-    cellModel1.dataList = @[@"Single Click",@"Double Click",@"Long Press 1s",@"Long Press 2s",@"Long Press 3s"];
+    cellModel1.dataList = @[@"Double Click",@"Triple Click",@"Long Press 1s",@"Long Press 2s",@"Long Press 3s"];
     cellModel1.dataListIndex = self.dataModel.mode;
     [self.section0List addObject:cellModel1];
     
