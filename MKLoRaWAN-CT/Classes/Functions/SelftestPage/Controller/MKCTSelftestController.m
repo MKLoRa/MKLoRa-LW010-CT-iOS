@@ -19,6 +19,9 @@
 #import "MKHudManager.h"
 #import "MKAlertController.h"
 #import "MKTableSectionLineHeader.h"
+#import "MKButtonMsgCell.h"
+
+#import "MKCTInterface+MKCTConfig.h"
 
 #import "MKCTSelftestModel.h"
 
@@ -27,7 +30,8 @@
 #import "MKCTBatteryInfoCell.h"
 
 @interface MKCTSelftestController ()<UITableViewDelegate,
-UITableViewDataSource>
+UITableViewDataSource,
+MKButtonMsgCellDelegate>
 
 @property (nonatomic, strong)MKBaseTableView *tableView;
 
@@ -36,6 +40,8 @@ UITableViewDataSource>
 @property (nonatomic, strong)NSMutableArray *section1List;
 
 @property (nonatomic, strong)NSMutableArray *section2List;
+
+@property (nonatomic, strong)NSMutableArray *section3List;
 
 @property (nonatomic, strong)NSMutableArray *headerList;
 
@@ -61,6 +67,10 @@ UITableViewDataSource>
         return 60.f;
     }
     if (indexPath.section == 2) {
+        MKButtonMsgCellModel *cellModel = self.section2List[indexPath.row];
+        return [cellModel cellHeightWithContentWidth:kViewWidth];;
+    }
+    if (indexPath.section == 3) {
         return 290.f;
     }
     
@@ -92,6 +102,9 @@ UITableViewDataSource>
     if (section == 2) {
         return self.section2List.count;
     }
+    if (section == 3) {
+        return self.section3List.count;
+    }
     
     return 0;
 }
@@ -107,9 +120,65 @@ UITableViewDataSource>
         cell.dataModel = self.section1List[indexPath.row];
         return cell;
     }
+    if (indexPath.section == 2) {
+        MKButtonMsgCell *cell = [MKButtonMsgCell initCellWithTableView:tableView];
+        cell.dataModel = self.section2List[indexPath.row];
+        cell.delegate = self;
+        return cell;
+    }
     MKCTBatteryInfoCell *cell = [MKCTBatteryInfoCell initCellWithTableView:tableView];
-    cell.dataModel = self.section2List[indexPath.row];
+    cell.dataModel = self.section3List[indexPath.row];
     return cell;
+}
+
+#pragma mark - MKButtonMsgCellDelegate
+/// 右侧按钮点击事件
+/// @param index 当前cell所在index
+- (void)mk_buttonMsgCellButtonPressed:(NSInteger)index {
+    if (index == 0) {
+        //Battery Reset
+        [self batteryReset];
+        return;
+    }
+}
+
+#pragma mark - 清除电池数据
+- (void)batteryReset {
+    NSString *msg = @"Are you sure to reset battery?";
+    MKAlertController *alertView = [MKAlertController alertControllerWithTitle:@"Warning!"
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+    alertView.notificationName = @"mk_bg_needDismissAlert";
+    @weakify(self);
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alertView addAction:cancelAction];
+    
+    UIAlertAction *moreAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        @strongify(self);
+        [self sendBatteryResetCommandToDevice];
+    }];
+    [alertView addAction:moreAction];
+    
+    [self presentViewController:alertView animated:YES completion:nil];
+}
+
+- (void)sendBatteryResetCommandToDevice {
+    [[MKHudManager share] showHUDWithTitle:@"Setting..."
+                                     inView:self.view
+                              isPenetration:NO];
+    [MKCTInterface ct_batteryResetWithSucBlock:^{
+        [[MKHudManager share] hide];
+        [self.section0List removeAllObjects];
+        [self.section1List removeAllObjects];
+        [self.section2List removeAllObjects];
+        [self.section3List removeAllObjects];
+        [self.headerList removeAllObjects];
+        [self readDataFromDevice];
+    } failedBlock:^(NSError * _Nonnull error) {
+        [[MKHudManager share] hide];
+        [self.view showCentralToast:error.userInfo[@"errorInfo"]];
+    }];
 }
 
 #pragma mark - interface
@@ -132,8 +201,9 @@ UITableViewDataSource>
     [self loadSection0Datas];
     [self loadSection1Datas];
     [self loadSection2Datas];
+    [self loadSection3Datas];
     
-    for (NSInteger i = 0; i < 3; i ++) {
+    for (NSInteger i = 0; i < 4; i ++) {
         MKTableSectionLineHeaderModel *headerModel = [[MKTableSectionLineHeaderModel alloc] init];
         [self.headerList addObject:headerModel];
     }
@@ -161,11 +231,21 @@ UITableViewDataSource>
 }
 
 - (void)loadSection2Datas {
+    MKButtonMsgCellModel *cellModel = [[MKButtonMsgCellModel alloc] init];
+    cellModel.index = 0;
+    cellModel.msg = @"Battery Reset";
+    cellModel.buttonTitle = @"Reset";
+    cellModel.noteMsg = @"*After replace with the new battery, need to click \"Reset\", otherwise the low power prompt will be unnormal.";
+    cellModel.noteMsgColor = RGBCOLOR(102, 102, 102);
+    [self.section2List addObject:cellModel];
+}
+
+- (void)loadSection3Datas {
     MKCTBatteryInfoCellModel *cellModel = [[MKCTBatteryInfoCellModel alloc] init];
     cellModel.msg = @"All Cycles Battery Information:";
     [cellModel mk_modelSetWithJSON:self.dataModel.allInfo];
     
-    [self.section2List addObject:cellModel];
+    [self.section3List addObject:cellModel];
 }
 
 #pragma mark - UI
@@ -209,6 +289,13 @@ UITableViewDataSource>
         _section2List = [NSMutableArray array];
     }
     return _section2List;
+}
+
+- (NSMutableArray *)section3List {
+    if (!_section3List) {
+        _section3List = [NSMutableArray array];
+    }
+    return _section3List;
 }
 
 - (NSMutableArray *)headerList {
