@@ -293,7 +293,7 @@ NSString *const mk_ct_contentKey = @"mk_ct_contentKey";
         operationID = mk_ct_taskReadAutoPowerOnAfterChargingOperation;
     }else if ([cmd isEqualToString:@"0200"]) {
         //读取密码开关
-        BOOL need = ([content isEqualToString:@"00"]);
+        BOOL need = ([content isEqualToString:@"01"]);
         resultDic = @{
             @"need":@(need)
         };

@@ -314,6 +314,7 @@ static CGFloat const hourButtonHeight = 25.f;
 }
 
 - (void)hourButtonPressed:(BOOL)start {
+    [self.intervalTextField resignFirstResponder];
     if (self.contentPanel.frame.origin.x < 0){
         [UIView animateWithDuration:0.25 animations:^{
             CGRect frame = self.contentPanel.frame;
@@ -350,6 +351,7 @@ static CGFloat const hourButtonHeight = 25.f;
 }
 
 - (void)miniuteButtonPressed:(BOOL)start {
+    [self.intervalTextField resignFirstResponder];
     if (self.contentPanel.frame.origin.x < 0){
         [UIView animateWithDuration:0.25 animations:^{
             CGRect frame = self.contentPanel.frame;
