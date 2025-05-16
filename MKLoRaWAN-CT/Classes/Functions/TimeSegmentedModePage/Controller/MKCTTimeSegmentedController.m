@@ -133,9 +133,9 @@ MKCTTimeSegmentedCellDelegate>
 
 #pragma mark - MKCTTimeSegmentedAddCellDelegate
 - (void)ct_timeSegmentedAddCell_addPressed {
-    if (self.section2List.count >= 10) {
-        //最多10组
-        [self.view showCentralToast:@"You can set up to 10 time points!"];
+    if (self.section2List.count >= 3) {
+        //最多3组
+        [self.view showCentralToast:@"You can set up to 3 time points!"];
         return;
     }
     MKCTTimeSegmentedCellModel *cellModel = [[MKCTTimeSegmentedCellModel alloc] init];

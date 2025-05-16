@@ -358,7 +358,7 @@
 }
 
 + (NSString *)fetchimeSegmentedModeTimePeriodSetting:(NSArray <mk_ct_timeSegmentedModeTimePeriodSettingProtocol>*)dataList {
-    if (dataList.count > 10) {
+    if (dataList.count > 3) {
         return @"";
     }
     if (!MKValidArray(dataList)) {
