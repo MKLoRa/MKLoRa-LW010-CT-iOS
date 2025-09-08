@@ -81,27 +81,6 @@
         {
           "name": "TextButtonCell",
           "source_files": "MKLoRaWAN-CT/Classes/Expand/TextButtonCell/**"
-        },
-        {
-          "name": "FilterCell",
-          "subspecs": [
-            {
-              "name": "FilterBeaconCell",
-              "source_files": "MKLoRaWAN-CT/Classes/Expand/FilterCell/FilterBeaconCell/**"
-            },
-            {
-              "name": "FilterByRawDataCell",
-              "source_files": "MKLoRaWAN-CT/Classes/Expand/FilterCell/FilterByRawDataCell/**"
-            },
-            {
-              "name": "FilterEditSectionHeaderView",
-              "source_files": "MKLoRaWAN-CT/Classes/Expand/FilterCell/FilterEditSectionHeaderView/**"
-            },
-            {
-              "name": "FilterNormalTextFieldCell",
-              "source_files": "MKLoRaWAN-CT/Classes/Expand/FilterCell/FilterNormalTextFieldCell/**"
-            }
-          ]
         }
       ]
     },
