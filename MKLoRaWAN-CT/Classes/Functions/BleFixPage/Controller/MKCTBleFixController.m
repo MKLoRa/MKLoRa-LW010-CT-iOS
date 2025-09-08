@@ -24,12 +24,15 @@
 #import "MKTableSectionLineHeader.h"
 #import "MKCustomUIAdopter.h"
 
+#import "MKFilterByMacController.h"
+#import "MKFilterByAdvNameController.h"
+
 #import "MKCTFilterRelationshipCell.h"
 
 #import "MKCTBleFixDataModel.h"
+#import "MKCTFilterByMacModel.h"
+#import "MKCTFilterByAdvNameModel.h"
 
-#import "MKCTFilterByMacController.h"
-#import "MKCTFilterByAdvNameController.h"
 #import "MKCTFilterByRawDataController.h"
 
 @interface MKCTBleFixController ()<UITableViewDelegate,
@@ -110,13 +113,19 @@ MKCTFilterRelationshipCellDelegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 4 && indexPath.row == 0) {
         //Filter by MAC
-        MKCTFilterByMacController *vc = [[MKCTFilterByMacController alloc] init];
+        MKFilterByMacController *vc = [[MKFilterByMacController alloc] init];
+        MKCTFilterByMacModel *model = [[MKCTFilterByMacModel alloc] init];
+        model.pageTitle = @"Filter by MAC";
+        vc.protocol = model;
         [self.navigationController pushViewController:vc animated:YES];
         return;
     }
     if (indexPath.section == 4 && indexPath.row == 1) {
         //Filter by ADV Name
-        MKCTFilterByAdvNameController *vc = [[MKCTFilterByAdvNameController alloc] init];
+        MKFilterByAdvNameController *vc = [[MKFilterByAdvNameController alloc] init];
+        MKCTFilterByAdvNameModel *model = [[MKCTFilterByAdvNameModel alloc] init];
+        model.pageTitle = @"Filter by ADV Name";
+        vc.protocol = model;
         [self.navigationController pushViewController:vc animated:YES];
         return;
     }
