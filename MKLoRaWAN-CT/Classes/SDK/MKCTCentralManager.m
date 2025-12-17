@@ -203,7 +203,11 @@ static dispatch_once_t onceToken;
 }
 
 - (void)startScan {
-    [[MKBLEBaseCentralManager shared] scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:@"AA15"]] options:nil];
+    NSArray *services = @[
+        [CBUUID UUIDWithString:@"AA15"],
+        [CBUUID UUIDWithString:@"BB10"]];
+    [[MKBLEBaseCentralManager shared] scanForPeripheralsWithServices:services
+                                                             options:nil];
 }
 
 - (void)stopScan {
@@ -472,11 +476,13 @@ static dispatch_once_t onceToken;
     if ([rssi integerValue] == 127 || !MKValidDict(advDic) || !peripheral) {
         return @{};
     }
-    
-    NSData *manufacturerData = advDic[@"kCBAdvDataServiceData"][[CBUUID UUIDWithString:@"AA15"]];
-    if (manufacturerData.length != 12) {
+    NSData *manuData1 = advDic[@"kCBAdvDataServiceData"][[CBUUID UUIDWithString:@"AA15"]];
+    NSData *manuData2 = advDic[@"kCBAdvDataServiceData"][[CBUUID UUIDWithString:@"BB10"]];
+    if (manuData1.length != 12 && manuData2.length != 12) {
         return @{};
     }
+    
+    NSData *manufacturerData = (MKValidData(manuData1) ? manuData1 : manuData2);
     NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:manufacturerData];
     
     NSInteger index = 0;
